@@ -16,8 +16,18 @@ def _cfg(tmp_path: Path) -> dict:
     cfg = cargar_config()
     cfg["modo"] = "sintetico"
     cfg["sintetico"] = dict(cfg["sintetico"])
-    # Más grueso que la corrida por defecto para que el test no tarde.
-    # La corrida documentada usa los 50 m de config.yaml.
+    cfg["procesado"] = dict(cfg["procesado"])
+    cfg["medicion"] = dict(cfg["medicion"])
+    # config.yaml queda en el ajuste de HyP3 (SENTINEL-1, malla 80 m).
+    # El banco sintético es NISAR y su resolución tiene que entrar entera en la malla.
+    cfg["procesado"]["plataforma"] = "auto"
+    cfg["procesado"]["coherencia_min"] = 0.4
+    cfg["medicion"]["malla_m"] = 100
+    # El anillo 400–1500 m es el ajuste de la tesela HyP3 (ver resultados reales).
+    # El banco sintético sigue el anillo de 1–2 km de la spec.
+    cfg["medicion"]["anillo_min_m"] = 1000
+    cfg["medicion"]["anillo_max_m"] = 2000
+    cfg["medicion"]["min_muestras_anillo"] = 30
     cfg["sintetico"]["resolucion_m"] = 100
     cfg["sintetico"]["n_meses"] = 18
     base = tmp_path / "data"

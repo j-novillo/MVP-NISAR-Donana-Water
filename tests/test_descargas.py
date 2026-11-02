@@ -36,6 +36,10 @@ def test_descarga_asf_exige_token(monkeypatch):
 
 def test_filtros_cdse_llevan_el_aoi_y_el_dem():
     cfg = cargar_config()
+    # La corrida real dejó dem_glo30 en false (el catálogo COP-DEM respondió vacío).
+    # El filtro se prueba con el interruptor encendido.
+    cfg["descarga"] = dict(cfg["descarga"])
+    cfg["descarga"]["dem_glo30"] = True
     nombres = [nombre for nombre, _ in filtros_productos(cfg)]
     assert "SENTINEL-2_L2A" in nombres
     assert "COP-DEM_GLO-30" in nombres
