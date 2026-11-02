@@ -1,0 +1,117 @@
+# Configuración de la PoC Doñana.
+# Cambiar `aoi.activa` de tesela_rociana a bbox_completo para pasar
+# de la tesela de 5 km a todo el sector (~18 x 22 km).
+
+modo: sintetico   # sintetico | real
+
+aoi:
+  activa: tesela_rociana
+  tesela_rociana:
+    centro_lat: 37.30
+    centro_lon: -6.58
+    lado_km: 5.0
+    descripcion: "Tesela 5x5 km centrada en Rociana del Condado"
+  bbox_completo:
+    lon_min: -6.70
+    lon_max: -6.48
+    lat_min: 37.20
+    lat_max: 37.40
+    descripcion: "Corona Forestal Norte, acuífero Almonte-Marismas"
+
+# Casco urbano de Rociana: roca/urbano compactado, punto estable.
+referencia:
+  lat: 37.30
+  lon: -6.58
+  descripcion: "Casco urbano de Rociana del Condado"
+
+# ETRS89 UTM huso 29. El bbox completo cruza el meridiano -6° (límite
+# con el huso 30); se mantiene un solo CRS para toda el área.
+crs_metrico: EPSG:25829
+
+procesado:
+  coherencia_min: 0.4
+  coherencia_zona_estable: 0.5
+  # L-banda NISAR aproximada (c / 1.257 GHz). Cada producto puede traer la suya.
+  longitud_onda_m: 0.238403
+  # d_mm = signo * (λ / 4π) * fase_rad * 1000.
+  # signo -1 => fase positiva corresponde a alejamiento del satélite (subsidencia en LOS).
+  # Hay que contrastar el signo con un punto conocido antes de fiarse de datos reales.
+  signo_fase: -1.0
+  plataforma: auto          # auto | NISAR | SENTINEL-1
+  min_ecuaciones_red: 8
+
+medicion:
+  malla_m: 100
+  anillo_min_m: 1000
+  anillo_max_m: 2000
+  z_anomalia: 2.0
+  # Suelo de la desviación típica (mm). Evita z-score enormes cuando el anillo
+  # es casi homogéneo y la diferencia real es ruido submilimétrico.
+  sigma_suelo_mm: 1.0
+  min_muestras_anillo: 30
+  min_fechas_ajuste: 8
+
+score:
+  buffer_m: 500
+  ndvi_min_cultivo: 0.35
+  # Campaña de fresa usada en el cruce agronómico (oct-may), como fija la spec.
+  meses_campana: [10, 11, 12, 1, 2, 3, 4, 5]
+
+validacion:
+  # Campaña de riego intenso (abr-jun) para el criterio de coherencia.
+  meses_riego: [4, 5, 6]
+  coherencia_fraccion_go: 0.30
+  coherencia_fraccion_nogo: 0.05
+  gradiente_mm_go: 5.0
+  gradiente_mm_nogo: 2.0
+  recall_go: 0.50
+  recall_nogo: 0.20
+  fraccion_vecinos_go: 0.50
+  # Proximidad a un pozo cerrado o a un punto WWF para el criterio legal.
+  distancia_documentada_m: 500
+  distancia_pozo_registrado_m: 500
+
+sintetico:
+  semilla: 2026
+  resolucion_m: 50
+  fecha_inicio: "2023-01-15"
+  n_meses: 24
+  longitud_onda_m: 0.238403
+  amplitud_cono_mm: 12.0
+  sigma_cono_m: 280.0
+  amplitud_fondo_mm: 1.2
+  ruido_ifg_mm: 0.6
+  # Pares temporales (meses) que forman la red de interferogramas.
+  retardos_meses: [1, 3]
+
+descarga:
+  nisar_gunw: true
+  nisar_inicio: "2025-10-01"
+  sentinel1_gunw_aria: true
+  sentinel1_slc: false
+  sentinel1_inicio: "2022-01-01"
+  sentinel1_fin: "2026-12-31"
+  sentinel2_l2a: true
+  sentinel2_nubes_max: 20
+  sentinel2_inicio: "2022-01-01"
+  dem_glo30: true
+  max_productos: 30
+
+capas_remotas:
+  chg_wfs: "https://idechg.chguadalquivir.es/geoserver/ggiscloud_root/ows"
+  chg_typename: "ggiscloud_root:captaciones_dph"
+  sigpac_wms: "https://wms.mapa.gob.es/sigpac/wms"
+  sigpac_wms_alternativo: "https://sigpac-hubcloud.es/wms"
+  sia_wms: "https://gis.miteco.gob.es/geoserver/agua/RedPiezometrica/wms"
+  sia_wfs: "https://gis.miteco.gob.es/geoserver/agua/RedPiezometrica/wfs"
+
+rutas:
+  interferogramas: data/raw/interferogramas
+  capas: data/raw/capas
+  ndvi: data/raw/ndvi/ndvi_parcelas.csv
+  procesado: data/procesado
+  resultados: data/resultados.parquet
+  parcelas_score: data/parcelas_score.parquet
+  geotiff: data/geotiff
+  validacion: data/validacion.json
+  figuras: data/figuras
