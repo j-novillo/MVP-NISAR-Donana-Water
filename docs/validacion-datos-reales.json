@@ -23,7 +23,7 @@
         "n_celdas_z": 12
       },
       "resultado": "indeterminado",
-      "detalle": "La mediana del exceso de hundimiento (celda menos anillo de 1-2 km) dentro de las celdas con z > 2.0 es 3.12 mm. El percentil 90 de todo el AOI es 1.45 mm y no se usa como umbral: un cono local no mueve ese percentil. El 83% de las anomalías tiene otra a menos de 250 m. Go si el cono mide al menos 5 mm y las anomalías se agrupan; no-go si se queda por debajo de 2 mm o el z-score no tiene estructura.",
+      "detalle": "La mediana del exceso de hundimiento (celda menos anillo de 400–1500 m) dentro de las celdas con z > 2.0 es 3.12 mm. El percentil 90 de todo el AOI es 1.45 mm y no se usa como umbral: un cono local no mueve ese percentil. El 83% de las anomalías tiene otra a menos de 250 m. Go si el cono mide al menos 5 mm y las anomalías se agrupan; no-go si se queda por debajo de 2 mm o el z-score no tiene estructura.",
       "umbral_go": 5.0,
       "umbral_nogo": 2.0
     },
@@ -32,7 +32,7 @@
       "titulo": "Discriminación legal",
       "valor": null,
       "resultado": "indeterminado",
-      "detalle": "Falta la capa de pozos registrados, el polígono SAR, o no hay celdas con z > 2. Sin ese cruce no se puede decir si las anomalías caen solo sobre pozos legales.",
+      "detalle": "Faltan la capa de pozos registrados y el polígono SAR. Hay 12 celdas con z > 2.0. Sin esas capas no se puede decir si las anomalías caen solo sobre pozos legales.",
       "umbral_go": "anomalías fuera de SAR y sin pozo, coincidiendo con WWF/CHG",
       "umbral_nogo": "anomalías solo sobre pozos legales"
     },

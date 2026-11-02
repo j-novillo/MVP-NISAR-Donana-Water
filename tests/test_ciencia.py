@@ -7,6 +7,7 @@ import pandas as pd
 import pytest
 
 from lectura_gunw import desplazamiento_mm, fase_desde_desplazamiento_mm
+from validar import detalle_legal_incompleto, texto_anillo
 from medir import ajuste_estacional, hundimiento_estacional, zscore_anillo
 from ndvi_s2 import enmascarar_scl, ndvi
 from procesar_insar import (
@@ -19,6 +20,15 @@ from procesar_insar import (
 from score import calcular_score, normalizar
 from sintetico import _serie_desplazamiento
 from utilidades import fechas_mensuales
+
+
+def test_los_textos_de_validacion_no_mienten_sobre_el_anillo_ni_las_celdas():
+    assert texto_anillo(400, 1500) == "400–1500 m"
+    con_anomalias = detalle_legal_incompleto(12, falta_pozos=True, falta_sar=True, umbral_z=2.0)
+    assert "Hay 12 celdas con z > 2.0" in con_anomalias
+    assert "No hay celdas" not in con_anomalias
+    sin_anomalias = detalle_legal_incompleto(0, falta_pozos=False, falta_sar=False, umbral_z=2.0)
+    assert sin_anomalias.startswith("No hay celdas con z > 2.0")
 
 
 def test_fase_y_desplazamiento_son_inversos():

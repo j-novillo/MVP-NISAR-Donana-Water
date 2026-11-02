@@ -48,6 +48,37 @@ def _criterio(identificador: str, titulo: str, valor, resultado: str, detalle: s
     }
 
 
+def texto_anillo(rmin_m: float, rmax_m: float) -> str:
+    """Intervalo del anillo tal como está en la config, en metros."""
+    return f"{rmin_m:.0f}–{rmax_m:.0f} m"
+
+
+def detalle_legal_incompleto(n_anomalias: int, falta_pozos: bool, falta_sar: bool, umbral_z: float) -> str:
+    """Texto del criterio legal cuando no se puede cerrar el cruce.
+
+    No mezcla causas: si hay celdas con z alto, no dice que no las hay.
+    """
+    if n_anomalias == 0:
+        celdas = f"No hay celdas con z > {umbral_z}."
+    else:
+        celdas = f"Hay {n_anomalias} celdas con z > {umbral_z}."
+    faltan = []
+    if falta_pozos:
+        faltan.append("la capa de pozos registrados")
+    if falta_sar:
+        faltan.append("el polígono SAR")
+    if not faltan:
+        return f"{celdas} Sin anomalías no hay cruce legal que evaluar."
+    if len(faltan) == 1:
+        falta = f"Falta {faltan[0]}."
+    else:
+        falta = f"Faltan {faltan[0]} y {faltan[1]}."
+    return (
+        f"{falta} {celdas} "
+        "Sin esas capas no se puede decir si las anomalías caen solo sobre pozos legales."
+    )
+
+
 def _tres_bandas(valor: float, go: float, nogo: float, mayor_es_go: bool) -> str:
     """Clasifica un número. Si mayor_es_go, por encima de `go` es go y por debajo de `nogo` es no-go."""
     if valor is None or not np.isfinite(valor):
@@ -204,7 +235,8 @@ def evaluar(cfg: dict) -> dict:
             },
             res_senal,
             (
-                f"La mediana del exceso de hundimiento (celda menos anillo de 1-2 km) "
+                f"La mediana del exceso de hundimiento (celda menos anillo de "
+                f"{texto_anillo(float(cfg['medicion']['anillo_min_m']), float(cfg['medicion']['anillo_max_m']))}) "
                 f"dentro de las celdas con z > {umbral_z} es {magnitud:.2f} mm. "
                 f"El percentil 90 de todo el AOI es {p90_global:.2f} mm y no se usa como umbral: "
                 "un cono local no mueve ese percentil. "
@@ -234,8 +266,12 @@ def evaluar(cfg: dict) -> dict:
                 "Discriminación legal",
                 None,
                 "indeterminado",
-                "Falta la capa de pozos registrados, el polígono SAR, o no hay celdas con z > 2. "
-                "Sin ese cruce no se puede decir si las anomalías caen solo sobre pozos legales.",
+                detalle_legal_incompleto(
+                    len(anomalias),
+                    falta_pozos=registrados is None,
+                    falta_sar=sar is None,
+                    umbral_z=umbral_z,
+                ),
                 "anomalías fuera de SAR y sin pozo, coincidiendo con WWF/CHG",
                 "anomalías solo sobre pozos legales",
             )

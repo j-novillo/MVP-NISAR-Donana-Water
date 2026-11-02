@@ -93,5 +93,3 @@ PYTHONPATH=src python src/medir.py
 PYTHONPATH=src python src/score.py
 PYTHONPATH=src python src/validar.py
 ```
-
-Sin push a GitHub. Parche: `/workspace/real-data-results.patch`.
