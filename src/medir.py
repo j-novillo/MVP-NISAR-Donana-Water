@@ -101,18 +101,24 @@ def ajuste_estacional(fechas, serie: np.ndarray, min_fechas: int = 8):
     return velocidad, amplitud, velocidad_lineal, coef
 
 
-def hundimiento_estacional(fechas, serie: np.ndarray) -> np.ndarray:
+def hundimiento_estacional(fechas, serie: np.ndarray, tolerancia_dias: int = 70) -> np.ndarray:
     """Milímetros que la superficie recupera de mayo a noviembre.
 
     Positivo = mayo más bajo que noviembre (el pico de bombeo y el rebote de
     otoño). Se promedia entre los años que tengan las dos fechas.
+
+    Con stacks trimestrales (p.ej. HyP3 a ~120 días) no hay escena en noviembre:
+    se acepta la más cercana a 15-nov dentro de `tolerancia_dias` (por defecto 70,
+    que cubre escenas de septiembre).
     """
     fechas = [parsear_fecha(f) for f in fechas]
     strokes = []
     for anio in sorted({f.year for f in fechas}):
-        i_may = indice_fecha_cercana(fechas, parsear_fecha(f"{anio}-05-15"))
-        i_nov = indice_fecha_cercana(fechas, parsear_fecha(f"{anio}-11-15"))
+        i_may = indice_fecha_cercana(fechas, parsear_fecha(f"{anio}-05-15"), tolerancia_dias)
+        i_nov = indice_fecha_cercana(fechas, parsear_fecha(f"{anio}-11-15"), tolerancia_dias)
         if i_may is None or i_nov is None:
+            continue
+        if i_may == i_nov:
             continue
         strokes.append(serie[i_nov] - serie[i_may])
     if not strokes:

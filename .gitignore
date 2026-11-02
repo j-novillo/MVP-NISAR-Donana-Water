@@ -34,3 +34,8 @@ data/*.md
 *.h5
 *.nc
 .streamlit/secrets.toml
+
+# Logs locales
+data/logs/
+*.part
+*.zip
