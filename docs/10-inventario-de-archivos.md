@@ -36,6 +36,20 @@ Rutas relativas a la raíz del repositorio.
 | `src/visor.py` | Todo lo anterior | Aplicación Streamlit |
 | `src/opcion_b_mintpy.py` | Un `timeseries.h5` opcional | Plantilla MintPy y, si se le pasa el HDF5, la serie en el formato de la opción A |
 | `src/utilidades.py` | `config.yaml` | AOI, rejilla, fechas, rutas. Lo usan los demás |
+| `src/comparar_nisar_s1.py` | GUNW NISAR + S1 en el AOI | `docs/comparacion-nisar-s1.json`, `docs/12-comparacion-nisar-s1.md` |
+| `src/descarga_referencias.py` | WFS piezómetros, NGL holdings | `piezometros*.gpkg`, catálogo GNSS, LEEMEs EGMS/series |
+| `src/descarga_nisar_chunked.py` | CSV subset + `EARTHDATA_TOKEN` | `data/raw/interferogramas/NISAR_*.h5` (reanudable) |
+| `src/convertir_hyp3.py` | Zips HyP3 | GeoTIFF S1 de 2 bandas + JSON |
+| `src/descarga_ndvi_process.py` | CDSE Process API | NDVI mensuales / por parcela |
+
+## Documentación añadida (mejora / comparación)
+
+| Archivo | Contenido |
+|---|---|
+| `docs/11-guia-ejecucion-local.md` | Cuentas, URLs, comandos para correr todo en un PC |
+| `docs/12-comparacion-nisar-s1.md` | Resultado de la comparación (generado) |
+| `docs/comparacion-nisar-s1.json` | Métricas máquina-legibles |
+| `docs/datos-referencia/` | Catálogo GNSS y resumen de capas WFS obtenidas |
 
 ## Tests
 
@@ -43,6 +57,7 @@ Rutas relativas a la raíz del repositorio.
 |---|---|
 | `tests/test_ciencia.py` | Fase↔mm, rampa, inversión, seno, hundimiento mayo-noviembre, z-score, fórmula del score, NDVI, recuperación de un cono con rampa y ruido |
 | `tests/test_descargas.py` | Filtros ASF y CDSE, renovación del token sin reenviar la clave, URL WFS, lectura de un HDF5 tipo NISAR y de un GeoTIFF con sidecar |
+| `tests/test_comparar.py` | Fórmulas de mejora % y detección de solape temporal |
 | `tests/test_pipeline.py` | Escena sintética reducida (100 m, 18 meses) de punta a punta, go en los cuatro criterios, recuerdo entre 50 % y 100 %, GeoTIFF, mapas del visor |
 
 La corrida documentada en el README usa la config por defecto (50 m, 24 meses),

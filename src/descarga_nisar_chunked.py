@@ -53,12 +53,14 @@ def download(url, out: Path):
                     need = end - pos + 1
                     if len(buf) != need:
                         raise IOError(f"short {len(buf)}!={need}")
+                    if pos + len(buf) > total:
+                        buf = buf[: max(0, total - pos)]
                     fh.write(buf)
                     fh.flush()
-                    pos = end + 1
+                    pos = pos + len(buf)
                     ok = True
                     failures = 0
-                    if (pos // CHUNK) % 20 == 0:
+                    if (pos // CHUNK) % 20 == 0 or pos >= total:
                         print(f"  {100*pos/total:.1f}% ({pos/1e6:.0f}MB) free={free_gb():.1f}G", flush=True)
                     break
                 except Exception as e:
@@ -71,6 +73,8 @@ def download(url, out: Path):
                         pass
             if not ok:
                 raise RuntimeError(f"stuck at {pos}")
+    if tmp.stat().st_size != total:
+        raise RuntimeError(f"size mismatch {tmp.stat().st_size} != {total}")
     tmp.rename(out)
     return out.stat().st_size
 

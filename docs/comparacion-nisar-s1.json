@@ -1,0 +1,109 @@
+{
+  "aoi": "tesela_rociana",
+  "umbral_coherencia": 0.3,
+  "solape_temporal": {
+    "hay_solape": false,
+    "motivo": "S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común",
+    "s1": [
+      "2022-01-06",
+      "2024-09-16"
+    ],
+    "nisar": [
+      "2025-10-30",
+      "2025-11-23"
+    ]
+  },
+  "sentinel1": {
+    "plataforma": "SENTINEL-1",
+    "n_interferogramas": 8,
+    "fechas_min": "2022-01-06",
+    "fechas_max": "2024-09-16",
+    "coherencia_media": 0.3547622765150753,
+    "coherencia_mediana": 0.3045437225424782,
+    "fraccion_usable": 0.5095427059712774,
+    "ruido_std_mm_zona_estable": 4.725515168095703,
+    "n_pixeles_aoi": 3969,
+    "n_pixeles_zona_estable": 11,
+    "notas": []
+  },
+  "nisar": {
+    "plataforma": "NISAR",
+    "n_interferogramas": 1,
+    "fechas_min": "2025-10-30",
+    "fechas_max": "2025-11-23",
+    "coherencia_media": 0.5153952344668692,
+    "coherencia_mediana": 0.5216261871293995,
+    "fraccion_usable": 0.9206827309236948,
+    "ruido_std_mm_zona_estable": 3.5390323153366334,
+    "n_pixeles_aoi": 2988,
+    "n_pixeles_zona_estable": 29,
+    "notas": []
+  },
+  "mejora_producto_calidad": {
+    "coherencia_media": {
+      "mejora_pct": 45.27904137095251,
+      "definicion": "100*(NISAR-S1)/S1  (mayor es mejor)",
+      "valor_s1": 0.3547622765150753,
+      "valor_nisar": 0.5153952344668692,
+      "estado": "ok"
+    },
+    "fraccion_usable": {
+      "mejora_pct": 80.68804049872773,
+      "definicion": "100*(NISAR-S1)/S1  (mayor es mejor)",
+      "valor_s1": 0.5095427059712774,
+      "valor_nisar": 0.9206827309236948,
+      "estado": "ok"
+    },
+    "ruido_std_mm_zona_estable": {
+      "mejora_pct": 25.1080106729866,
+      "definicion": "100*(S1-NISAR)/S1  (menor es mejor)",
+      "valor_s1": 4.725515168095703,
+      "valor_nisar": 3.5390323153366334,
+      "estado": "ok"
+    }
+  },
+  "mejora_exactitud_vs_verdad": {
+    "rmse_gnss_los": {
+      "estado": "no_calculable",
+      "mejora_pct": null,
+      "motivos": [
+        "S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común",
+        "no hay series GNSS descargables (NGL tenv3 404; hace falta RINEX de RAP/IGN procesado a ENU/LOS)",
+        "no hay piezometros_niveles.csv (la CHG solo ofrece series por visor web, sin API CSV estable)",
+        "no hay productos EGMS locales (API archive exige login CLMS)"
+      ]
+    },
+    "correlacion_piezometros": {
+      "estado": "no_calculable",
+      "mejora_pct": null,
+      "motivos": [
+        "S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común",
+        "no hay series GNSS descargables (NGL tenv3 404; hace falta RINEX de RAP/IGN procesado a ENU/LOS)",
+        "no hay piezometros_niveles.csv (la CHG solo ofrece series por visor web, sin API CSV estable)",
+        "no hay productos EGMS locales (API archive exige login CLMS)"
+      ]
+    },
+    "rmse_egms": {
+      "estado": "no_calculable",
+      "mejora_pct": null,
+      "motivos": [
+        "S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común",
+        "no hay series GNSS descargables (NGL tenv3 404; hace falta RINEX de RAP/IGN procesado a ENU/LOS)",
+        "no hay piezometros_niveles.csv (la CHG solo ofrece series por visor web, sin API CSV estable)",
+        "no hay productos EGMS locales (API archive exige login CLMS)"
+      ]
+    }
+  },
+  "verdad_terreno_disponible": {
+    "piezometros_puntos": true,
+    "piezometros_niveles_csv": false,
+    "gnss_series": [],
+    "egms_productos": [],
+    "gnss_catalogo": "/workspace/MVP-NISAR-Donana-Water/data/raw/gnss/estaciones_cercanas.csv"
+  },
+  "advertencias": [
+    "Las métricas de coherencia/ruido comparan productos sobre el mismo AOI; si no hay solape temporal, NO son una validación coetánea.",
+    "NISAR es banda L (λ≈0.24 m); Sentinel-1 es banda C (λ≈0.055 m).",
+    "No mezclar ambas plataformas en la misma inversión SBAS."
+  ]
+}

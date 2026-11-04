@@ -392,8 +392,23 @@ def procesar(cfg: dict) -> dict:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Apila GUNW y reconstruye la deformación (opción A).")
     parser.add_argument("--config", default=None, help="Ruta alternativa a config.yaml")
+    parser.add_argument(
+        "--plataforma",
+        default=None,
+        help="Forzar plataforma (NISAR, SENTINEL-1, ...). Por defecto usa config/auto.",
+    )
+    parser.add_argument(
+        "--salida",
+        default=None,
+        help="Directorio de salida (por defecto rutas.procesado del YAML).",
+    )
     args = parser.parse_args(argv)
-    procesar(cargar_config(args.config))
+    cfg = cargar_config(args.config)
+    if args.plataforma:
+        cfg.setdefault("procesado", {})["plataforma"] = args.plataforma
+    if args.salida:
+        cfg.setdefault("rutas", {})["procesado"] = args.salida
+    procesar(cfg)
 
 
 if __name__ == "__main__":

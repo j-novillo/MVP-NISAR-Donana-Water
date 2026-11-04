@@ -39,3 +39,4 @@ data/*.md
 data/logs/
 *.part
 *.zip
+data/procesado_nisar/

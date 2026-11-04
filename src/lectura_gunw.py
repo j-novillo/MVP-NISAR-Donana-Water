@@ -219,11 +219,17 @@ def _a_2d(arr: np.ndarray) -> np.ndarray:
 def _georreferencia_hdf5(handle, forma: tuple) -> tuple[Affine, str]:
     """Intenta ejes NISAR (metros) y, si no, lon/lat de ARIA."""
     candidatos_x = (
+        "science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/HH/xCoordinates",
+        "science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/VV/xCoordinates",
+        "science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/xCoordinates",
         "science/LSAR/GUNW/grids/frequencyA/xCoordinates",
         "science/LSAR/GUNW/grids/frequencyA/xCoordinatesM",
         "science/grids/data/xCoordinates",
     )
     candidatos_y = (
+        "science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/HH/yCoordinates",
+        "science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/VV/yCoordinates",
+        "science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/yCoordinates",
         "science/LSAR/GUNW/grids/frequencyA/yCoordinates",
         "science/LSAR/GUNW/grids/frequencyA/yCoordinatesM",
         "science/grids/data/yCoordinates",
@@ -251,15 +257,34 @@ def _georreferencia_hdf5(handle, forma: tuple) -> tuple[Affine, str]:
 
 
 def _crs_hdf5(handle) -> str | None:
-    for clave in (
+    """Lee el EPSG del GUNW. NISAR lo guarda como dataset `projection` (=código)
+    con atributo `epsg_code`; a veces solo hay atributos.
+    """
+    candidatos = (
+        "science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/HH/projection",
+        "science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/VV/projection",
+        "science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/projection",
         "science/LSAR/GUNW/grids/frequencyA/projection",
+        "science/LSAR/GUNW/metadata/radarGrid/projection",
         "science/LSAR/GUNW/metadata/radarGrid",
-    ):
-        if clave in handle:
-            attrs = dict(handle[clave].attrs)
-            for nombre in ("epsg", "EPSG", "spatial_epsg"):
-                if nombre in attrs:
-                    return f"EPSG:{int(attrs[nombre])}"
+        "science/grids/data/projection",
+    )
+    for clave in candidatos:
+        if clave not in handle:
+            continue
+        nodo = handle[clave]
+        attrs = dict(nodo.attrs)
+        for nombre in ("epsg_code", "epsg", "EPSG", "spatial_epsg"):
+            if nombre in attrs:
+                return f"EPSG:{int(attrs[nombre])}"
+        # Dataset escalar con el código EPSG.
+        try:
+            if hasattr(nodo, "shape") and nodo.shape == ():
+                codigo = int(nodo[()])
+                if 1000 < codigo < 100000:
+                    return f"EPSG:{codigo}"
+        except Exception:
+            pass
     return None
 
 

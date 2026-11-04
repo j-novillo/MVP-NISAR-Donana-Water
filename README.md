@@ -268,6 +268,9 @@ velocidad, hundimiento estacional y coherencia media.
 | [docs/08-opcion-b-mintpy.md](docs/08-opcion-b-mintpy.md) | SBAS si la opción A se queda corta |
 | [docs/09-riesgos-y-limitaciones.md](docs/09-riesgos-y-limitaciones.md) | Qué puede tumbar la hipótesis |
 | [docs/10-inventario-de-archivos.md](docs/10-inventario-de-archivos.md) | Cada script, cada salida |
+| [docs/11-guia-ejecucion-local.md](docs/11-guia-ejecucion-local.md) | Instalar, cuentas, URLs y comandos en tu PC |
+| [docs/12-comparacion-nisar-s1.md](docs/12-comparacion-nisar-s1.md) | Mejora % NISAR vs S1 (y qué no se pudo calcular) |
+| [docs/resultados-datos-reales.md](docs/resultados-datos-reales.md) | Informe de la corrida real (HyP3 + NDVI) |
 
 ## Licencia de los datos
 
