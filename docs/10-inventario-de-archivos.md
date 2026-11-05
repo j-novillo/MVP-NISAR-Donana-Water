@@ -50,6 +50,9 @@ Rutas relativas a la raíz del repositorio.
 | `docs/12-comparacion-nisar-s1.md` | Por qué las cifras de 2026-11-04 no son una mejora |
 | `docs/13-referencias-y-comparacion.md` | Estado de GNSS, EGMS y piezómetros |
 | `docs/14-protocolo-comparacion.md` | Protocolo; no es el informe final |
+| `docs/15-informe-viabilidad-provisional.md` | Informe provisional del 5 nov 2026; falta el ascendente de diciembre |
+| `docs/evidencia-parcial-2026-11-05/` | CSV de tres casos, GNSS, EGMS y jobs sin credenciales |
+| `src/pares_controlados.py` | Id de ventana con geometría; la letra del satélite no es la órbita |
 | `docs/comparacion-nisar-s1.json` | Instantánea reetiquetada; porcentajes en null |
 | `docs/datos-referencia/` | Catálogo GNSS y recuento de capas WFS, no series |
 | `src/comparacion_protocolo.py` | Fórmula de error, solape de pares, máscara común, ENU→LOS |
@@ -64,6 +67,7 @@ Rutas relativas a la raíz del repositorio.
 | `tests/test_ciencia.py` | Fase↔mm, rampa, inversión, seno, hundimiento mayo-noviembre, z-score, fórmula del score, NDVI, recuperación de un cono con rampa y ruido |
 | `tests/test_descargas.py` | Filtros ASF y CDSE, renovación del token sin reenviar la clave, URL WFS, lectura de un HDF5 tipo NISAR y de un GeoTIFF con sidecar |
 | `tests/test_comparar.py` | Mejora de error solo si es comparable; solape de pares; papeles de GNSS, piezómetro y EGMS |
+| `tests/test_pares_controlados.py` | Id único por geometría y diferencias absolutas ya publicadas, sin recomputar rásteres |
 | `tests/test_pipeline.py` | Escena sintética reducida (100 m, 18 meses) de punta a punta, go en los cuatro criterios, recuerdo entre 50 % y 100 %, GeoTIFF, mapas del visor |
 
 La corrida documentada en el README usa la config por defecto (50 m, 24 meses),

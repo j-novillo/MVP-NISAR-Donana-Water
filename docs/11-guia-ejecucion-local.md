@@ -1,5 +1,10 @@
 # Guía de ejecución local (PC propio)
 
+El informe provisional, con lo que ya se puede decir y lo que falta, está en
+`docs/15-informe-viabilidad-provisional.md`. Esta guía solo dice cómo
+descargar y arrancar. Los secretos van en `.env` (ver `.env.example`); no se
+versionan.
+
 Cómo instalar el entorno, qué datos bajar, desde dónde, con qué cuentas, y
 cómo lanzar la tubería completa más la comparación NISAR vs Sentinel-1.
 
@@ -26,9 +31,9 @@ procesado opción A de la tesela 5×5 km: minutos.
 EARTHDATA_TOKEN=...
 CDSE_USERNAME=tu_email@ejemplo.com
 CDSE_PASSWORD=...
-# Opcional si usas HyP3 SDK:
-EARTHDATA_USERNAME=...
-EARTHDATA_PASSWORD=...
+# HyP3 no necesita usuario ni contraseña:
+#   from hyp3_sdk import HyP3
+#   HyP3(token=os.environ["EARTHDATA_TOKEN"])
 ```
 
 ## 2. Clonar e instalar

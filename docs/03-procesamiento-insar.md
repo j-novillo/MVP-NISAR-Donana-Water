@@ -25,9 +25,10 @@ d_mm = signo · (λ / 4π) · fase · 1000
 
 Con `signo = -1` (el defecto), una fase positiva es un alejamiento del
 satélite. En una geometría casi vertical, alejarse es hundirse, así que la
-subsidencia sale negativa. λ de la banda L de NISAR se toma como 0,238403 m
-si el producto no trae la suya. La de Sentinel-1, cuando entra un GUNW de
-ARIA, es la del propio fichero (~0,0555 m).
+subsidencia sale negativa. Si el GUNW trae `centerFrequency`, λ = c / f.
+En los dos productos observados esa frecuencia es 1,229 GHz y λ =
+0,2439320244 m. El valor 0,238403 m no se usa para esos ficheros. La de
+Sentinel-1, cuando entra un GUNW de ARIA, es la del propio fichero (~0,0555 m).
 
 Este signo no es una ley. Hay productos que definen la fase al revés. Antes
 de creerse un mapa real hay que mirar un punto que se sepa estable o un

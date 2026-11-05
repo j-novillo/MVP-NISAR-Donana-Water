@@ -271,6 +271,7 @@ velocidad, hundimiento estacional y coherencia media.
 | [docs/11-guia-ejecucion-local.md](docs/11-guia-ejecucion-local.md) | Instalar, cuentas, URLs y comandos en tu PC |
 | [docs/12-comparacion-nisar-s1.md](docs/12-comparacion-nisar-s1.md) | Por qué la comparación sigue no_evaluable |
 | [docs/14-protocolo-comparacion.md](docs/14-protocolo-comparacion.md) | Reglas del porcentaje de error, sin informe final |
+| [docs/15-informe-viabilidad-provisional.md](docs/15-informe-viabilidad-provisional.md) | Informe provisional del 5 nov 2026; falta el ascendente de diciembre |
 | [docs/resultados-datos-reales.md](docs/resultados-datos-reales.md) | Informe de la corrida real (HyP3 + NDVI) |
 
 ## Licencia de los datos

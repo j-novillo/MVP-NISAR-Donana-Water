@@ -1,0 +1,12 @@
+{
+  "created_upstream": "2026-11-05T21:14:06+01:00",
+  "zone": "Europe/Madrid",
+  "partial": true,
+  "missing_pair": "S1 ascending 2025-12-04 → 2025-12-16 (job HyP3 SUCCEEDED; el ZIP seguía descargándose al cerrar el paquete)",
+  "do_not_cite": "Media de coherencia NISAR de dos ventanas frente a un solo par S1 ascendente (0,6002). Es un agregado sesgado.",
+  "primary_table": "controlled_pairs_descriptive.csv",
+  "n_controlled_cases": 3,
+  "n_temporal_per_case": 1,
+  "accuracy_improvement_pct": null,
+  "note": "Sin credenciales ni rásteres. El identificador window_id del CSV no distingue ascendente de descendente; la columna s1_geometry sí. El informe usa un id corregido y no recomputa las cifras."
+}
