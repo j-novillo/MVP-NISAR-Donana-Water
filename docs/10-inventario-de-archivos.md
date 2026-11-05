@@ -50,7 +50,9 @@ Rutas relativas a la raíz del repositorio.
 | `docs/12-comparacion-nisar-s1.md` | Por qué las cifras de 2026-11-04 no son una mejora |
 | `docs/13-referencias-y-comparacion.md` | Estado de GNSS, EGMS y piezómetros |
 | `docs/14-protocolo-comparacion.md` | Protocolo; no es el informe final |
-| `docs/15-informe-viabilidad-provisional.md` | Informe provisional del 5 nov 2026; falta el ascendente de diciembre |
+| `docs/15-informe-viabilidad-provisional.md` | Entrega de las 21:14, superada por el informe final |
+| `docs/16-informe-viabilidad-final.md` | Cierre del estudio actual con los cuatro casos |
+| `docs/evidencia-final-2026-11-05/` | CSV, manifiestos y jobs del paquete de las 22:05, sin rásteres ni secretos |
 | `docs/evidencia-parcial-2026-11-05/` | CSV de tres casos, GNSS, EGMS y jobs sin credenciales |
 | `src/pares_controlados.py` | Id de ventana con geometría; la letra del satélite no es la órbita |
 | `docs/comparacion-nisar-s1.json` | Instantánea reetiquetada; porcentajes en null |

@@ -17,7 +17,8 @@ tubería. Aquí está el porqué de cada paso.
 12. [Comparación NISAR / Sentinel-1](12-comparacion-nisar-s1.md)
 13. [Referencias de validación](13-referencias-y-comparacion.md)
 14. [Protocolo de comparación](14-protocolo-comparacion.md)
-15. [Informe de viabilidad provisional](15-informe-viabilidad-provisional.md)
+15. [Informe de viabilidad provisional](15-informe-viabilidad-provisional.md) (superado)
+16. [Informe final del estudio actual](16-informe-viabilidad-final.md)
 
 Orden de lectura si se va a tocar el código: 3, 4 y 5. Si se van a bajar datos
 reales: 2 y 9. Si solo se quiere saber si el concepto aguanta: 6 y 9.

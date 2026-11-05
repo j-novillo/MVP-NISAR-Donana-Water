@@ -1,0 +1,284 @@
+{
+  "audit": {
+    "cloud_commit_tests": "cc2f4ea",
+    "window_id_includes_geometry": true,
+    "orbit_not_from_S1AA_S1CC_letters": true,
+    "previous_csv_preserved": "controlled_pairs_descriptive_prev_20261105_2115.csv",
+    "do_not_average_across_mismatched_windows": true,
+    "gnss_status": "NGL HUEL/HULV/HUE1/LEBR endpoints exist; no local Rociana LOS-anchored control"
+  },
+  "definitions": {
+    "native_aoi_n": "Centros de p\u00edxel nativos en AOI 5x5 (denominador espacial).",
+    "native_valid_n": "Fase/coh finitas y componentes v\u00e1lidos; sin umbral 0.3.",
+    "usable_aoi_fraction": "(native_valid AND coh>=0.3)/native_aoi_n. M\u00e1scara condicionada al umbral 0.3 sobre AOI completo; NO es n_common_usable ni n temporal.",
+    "n_common_valid": "Soporte com\u00fan sin umbral 0.3 (espacial).",
+    "n_common_usable": "Soporte com\u00fan con coh>=0.3 en ambos (espacial).",
+    "n_independent_time_pairs": "Siempre 1 por registro.",
+    "window_id": "Incluye geometr\u00eda S1 para no colisionar Asc/Desc misma fecha.",
+    "orbit_source": "orbita_desde_los(LOS, look); S1 mira Right; no letras S1AA/S1CC.",
+    "accuracy_improvement_pct": "Siempre null: sin GNSS LOS local anclado."
+  },
+  "pairs": [
+    {
+      "window_id": "NISAR_20251030_20251123__S1_20251029_20251122__AscendingRight",
+      "nisar": "NISAR_L2_PR_GUNW_004_015_A_021_006_2000_SH_20251030T053143_20251030T053218_20251123T053144_20251123T053219_X05010_N_F_J_001",
+      "sentinel1": "S1AA_20251029T182645_20251122T182644_VVP024_INT80_G_weF_DCB0",
+      "nisar_geometry": "Ascending/Left",
+      "s1_geometry": "Ascending/Right",
+      "nisar_look_direction": "Left",
+      "s1_look_direction": "Right",
+      "nisar_orbita": "Ascending",
+      "s1_orbita": "Ascending",
+      "s1_orbit_source": "orbita_desde_los+Right",
+      "satellite_letters_are_not_orbit": true,
+      "native_dates_nisar": [
+        "20251030",
+        "20251123"
+      ],
+      "native_dates_s1": [
+        "20251029",
+        "20251122"
+      ],
+      "date_offsets_days": [
+        1,
+        1
+      ],
+      "common_grid": "EPSG32630 native NISAR 80m; S1 nearest-neighbor",
+      "n_common_valid": 2950,
+      "n_common_usable": 2676,
+      "n_independent_time_pairs": 1,
+      "note_n_are_spatial_not_temporal": true,
+      "common_coh_nisar_on_valid_support": 0.5264055132865906,
+      "common_coh_s1_on_valid_support": 0.7113759542395502,
+      "coh_diff_abs_valid_support": -0.18497044095295967,
+      "coh_diff_rel_pct_vs_s1_exploratory": -26.001784267601533,
+      "metric_role": "exploratory_product_quality_NOT_accuracy",
+      "los_angle_deg": 87.10080437380542,
+      "nisar_los_enu": [
+        0.6853090524673462,
+        0.2069024294614792,
+        0.6982427137387441
+      ],
+      "s1_los_enu": [
+        -0.6540950685850881,
+        -0.11305273766822059,
+        0.7479162568549893
+      ],
+      "sign_anchored": false,
+      "accuracy_improvement_pct": null,
+      "uncertainty": "1 par temporal; sin GNSS LOS local anclado",
+      "conditional_vertical_only_own_aoi_median_reference": {
+        "assumption": "E=N=0, signos nominales; NO exactitud",
+        "nisar_p10_p90_mm": [
+          -7.172145843505859,
+          8.64339828491211
+        ],
+        "s1_p10_p90_mm": [
+          -3.651868176666099,
+          4.092789212173862
+        ],
+        "map_pearson_r_descriptive": 0.13195820720079604,
+        "not_noise_or_accuracy": true
+      }
+    },
+    {
+      "window_id": "NISAR_20251030_20251123__S1_20251029_20251122__DescendingRight",
+      "nisar": "NISAR_L2_PR_GUNW_004_015_A_021_006_2000_SH_20251030T053143_20251030T053218_20251123T053144_20251123T053219_X05010_N_F_J_001",
+      "sentinel1": "S1CC_20251029T063440_20251122T063439_VVP024_INT80_G_weF_B181",
+      "nisar_geometry": "Ascending/Left",
+      "s1_geometry": "Descending/Right",
+      "nisar_look_direction": "Left",
+      "s1_look_direction": "Right",
+      "nisar_orbita": "Ascending",
+      "s1_orbita": "Descending",
+      "s1_orbit_source": "orbita_desde_los+Right",
+      "satellite_letters_are_not_orbit": true,
+      "native_dates_nisar": [
+        "20251030",
+        "20251123"
+      ],
+      "native_dates_s1": [
+        "20251029",
+        "20251122"
+      ],
+      "date_offsets_days": [
+        1,
+        1
+      ],
+      "common_grid": "EPSG32630 native NISAR 80m; S1 nearest-neighbor",
+      "n_common_valid": 1949,
+      "n_common_usable": 1263,
+      "n_independent_time_pairs": 1,
+      "note_n_are_spatial_not_temporal": true,
+      "common_coh_nisar_on_valid_support": 0.5340821743011475,
+      "common_coh_s1_on_valid_support": 0.45634491037502845,
+      "coh_diff_abs_valid_support": 0.07773726392611902,
+      "coh_diff_rel_pct_vs_s1_exploratory": 17.03476080454887,
+      "metric_role": "exploratory_product_quality_NOT_accuracy",
+      "los_angle_deg": 22.49763785254216,
+      "nisar_los_enu": [
+        0.6853090524673462,
+        0.2069024294614792,
+        0.6982427137387441
+      ],
+      "s1_los_enu": [
+        0.502138698290467,
+        -0.0976159688876801,
+        0.8592600860577503
+      ],
+      "sign_anchored": false,
+      "accuracy_improvement_pct": null,
+      "uncertainty": "1 par temporal; sin GNSS LOS local anclado",
+      "conditional_vertical_only_own_aoi_median_reference": {
+        "assumption": "E=N=0, signos nominales; NO exactitud",
+        "nisar_p10_p90_mm": [
+          -6.920156860351563,
+          8.243734741210936
+        ],
+        "s1_p10_p90_mm": [
+          -9.32711823808928,
+          12.075864201888661
+        ],
+        "map_pearson_r_descriptive": 0.09936230664516628,
+        "not_noise_or_accuracy": true
+      }
+    },
+    {
+      "window_id": "NISAR_20251205_20251217__S1_20251204_20251216__AscendingRight",
+      "nisar": "NISAR_L2_PR_GUNW_007_015_A_021_008_2000_SH_20251205T053144_20251205T053219_20251217T053145_20251217T053220_X05010_N_F_J_001",
+      "sentinel1": "S1AA_20251204T182643_20251216T182642_VVP012_INT80_G_weF_6F69",
+      "nisar_geometry": "Ascending/Left",
+      "s1_geometry": "Ascending/Right",
+      "nisar_look_direction": "Left",
+      "s1_look_direction": "Right",
+      "nisar_orbita": "Ascending",
+      "s1_orbita": "Ascending",
+      "s1_orbit_source": "orbita_desde_los+Right",
+      "satellite_letters_are_not_orbit": true,
+      "native_dates_nisar": [
+        "20251205",
+        "20251217"
+      ],
+      "native_dates_s1": [
+        "20251204",
+        "20251216"
+      ],
+      "date_offsets_days": [
+        1,
+        1
+      ],
+      "common_grid": "EPSG32630 native NISAR 80m; S1 nearest-neighbor",
+      "n_common_valid": 4047,
+      "n_common_usable": 3975,
+      "n_independent_time_pairs": 1,
+      "note_n_are_spatial_not_temporal": true,
+      "common_coh_nisar_on_valid_support": 0.667840838432312,
+      "common_coh_s1_on_valid_support": 0.8946040503244386,
+      "coh_diff_abs_valid_support": -0.22676321189212656,
+      "coh_diff_rel_pct_vs_s1_exploratory": -25.347885671866592,
+      "metric_role": "exploratory_product_quality_NOT_accuracy",
+      "los_angle_deg": 87.09180956205778,
+      "nisar_los_enu": [
+        0.6853809356689453,
+        0.20685455203056335,
+        0.6981863414059287
+      ],
+      "s1_los_enu": [
+        -0.6539217746127803,
+        -0.11300157072193481,
+        0.7480755246194615
+      ],
+      "sign_anchored": false,
+      "accuracy_improvement_pct": null,
+      "uncertainty": "1 par temporal; sin GNSS LOS local anclado",
+      "conditional_vertical_only_own_aoi_median_reference": {
+        "assumption": "E=N=0, signos nominales; NO exactitud",
+        "nisar_p10_p90_mm": [
+          -6.329737091064453,
+          5.539657592773436
+        ],
+        "s1_p10_p90_mm": [
+          -8.503300862216843,
+          4.312776870686594
+        ],
+        "map_pearson_r_descriptive": 0.10801341813116494,
+        "not_noise_or_accuracy": true
+      }
+    },
+    {
+      "window_id": "NISAR_20251205_20251217__S1_20251204_20251216__DescendingRight",
+      "nisar": "NISAR_L2_PR_GUNW_007_015_A_021_008_2000_SH_20251205T053144_20251205T053219_20251217T053145_20251217T053220_X05010_N_F_J_001",
+      "sentinel1": "S1CC_20251204T063439_20251216T063438_VVP012_INT80_G_weF_C9F5",
+      "nisar_geometry": "Ascending/Left",
+      "s1_geometry": "Descending/Right",
+      "nisar_look_direction": "Left",
+      "s1_look_direction": "Right",
+      "nisar_orbita": "Ascending",
+      "s1_orbita": "Descending",
+      "s1_orbit_source": "orbita_desde_los+Right",
+      "satellite_letters_are_not_orbit": true,
+      "native_dates_nisar": [
+        "20251205",
+        "20251217"
+      ],
+      "native_dates_s1": [
+        "20251204",
+        "20251216"
+      ],
+      "date_offsets_days": [
+        1,
+        1
+      ],
+      "common_grid": "EPSG32630 native NISAR 80m; S1 nearest-neighbor",
+      "n_common_valid": 2459,
+      "n_common_usable": 2398,
+      "n_independent_time_pairs": 1,
+      "note_n_are_spatial_not_temporal": true,
+      "common_coh_nisar_on_valid_support": 0.6597662568092346,
+      "common_coh_s1_on_valid_support": 0.8914983434047384,
+      "coh_diff_abs_valid_support": -0.23173208659550382,
+      "coh_diff_rel_pct_vs_s1_exploratory": -25.993552126018695,
+      "metric_role": "exploratory_product_quality_NOT_accuracy",
+      "los_angle_deg": 22.50348384393338,
+      "nisar_los_enu": [
+        0.6853809356689453,
+        0.20685455203056335,
+        0.6981863414059287
+      ],
+      "s1_los_enu": [
+        0.5019900242949309,
+        -0.09758147339355581,
+        0.8593508720321776
+      ],
+      "sign_anchored": false,
+      "accuracy_improvement_pct": null,
+      "uncertainty": "1 par temporal; sin GNSS LOS local anclado",
+      "conditional_vertical_only_own_aoi_median_reference": {
+        "assumption": "E=N=0, signos nominales; NO exactitud",
+        "nisar_p10_p90_mm": [
+          -6.0019786834716795,
+          5.382997131347662
+        ],
+        "s1_p10_p90_mm": [
+          -2.52688390505029,
+          2.5087877519418615
+        ],
+        "map_pearson_r_descriptive": 0.06051222817161906,
+        "not_noise_or_accuracy": true
+      }
+    }
+  ],
+  "n_pairs": 4,
+  "s1_products_loaded": [
+    "S1AA_20251029T182645_20251122T182644_VVP024_INT80_G_weF_DCB0",
+    "S1AA_20251122T182644_20251204T182643_VVP012_INT80_G_weF_4D20",
+    "S1AA_20251204T182643_20251216T182642_VVP012_INT80_G_weF_6F69",
+    "S1CC_20251029T063440_20251122T063439_VVP024_INT80_G_weF_B181",
+    "S1CC_20251204T063439_20251216T063438_VVP012_INT80_G_weF_C9F5",
+    "S1DD_20261020T062623_20261101T062623_VVR012_INT80_G_weF_BA12"
+  ],
+  "nisar_products_loaded": [
+    "NISAR_L2_PR_GUNW_004_015_A_021_006_2000_SH_20251030T053143_20251030T053218_20251123T053144_20251123T053219_X05010_N_F_J_001",
+    "NISAR_L2_PR_GUNW_007_015_A_021_008_2000_SH_20251205T053144_20251205T053219_20251217T053145_20251217T053220_X05010_N_F_J_001"
+  ]
+}

@@ -47,10 +47,11 @@ def test_orbita_desde_el_vector_los_observado():
 
 
 def test_diferencia_absoluta_de_los_tres_casos_publicados():
-    # Cifras del CSV del box. No se promedian.
+    # Cifras del CSV final del 5 nov 2026, 22:05. No se promedian ni se recomputan.
     casos = [
         (0.5264055132865906, 0.7113759542395502, -0.18497044095295967),
         (0.5340821743011475, 0.45634491037502845, 0.07773726392611902),
+        (0.667840838432312, 0.8946040503244386, -0.22676321189212656),
         (0.6597662568092346, 0.8914983434047384, -0.23173208659550382),
     ]
     deltas = []
@@ -62,6 +63,18 @@ def test_diferencia_absoluta_de_los_tres_casos_publicados():
     rel = porcentaje_relativo_exploratorio(casos[0][0], casos[0][1])
     assert rel == pytest.approx(-26.001784267601533)
     assert rel is not None
+
+
+def test_cuatro_comparaciones_son_dos_ventanas_nisar():
+    ids = [
+        id_ventana(("20251030", "20251123"), ("20251029", "20251122"), "Ascending/Right"),
+        id_ventana(("20251030", "20251123"), ("20251029", "20251122"), "Descending/Right"),
+        id_ventana(("20251205", "20251217"), ("20251204", "20251216"), "Ascending/Right"),
+        id_ventana(("20251205", "20251217"), ("20251204", "20251216"), "Descending/Right"),
+    ]
+    exigir_ids_unicos(ids)
+    ventanas = {i.split("__S1_")[0] for i in ids}
+    assert ventanas == {"NISAR_20251030_20251123", "NISAR_20251205_20251217"}
 
 
 def test_el_descendente_de_2026_no_entra_en_nisar_2025():

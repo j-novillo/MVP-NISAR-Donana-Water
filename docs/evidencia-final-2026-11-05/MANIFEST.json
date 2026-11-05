@@ -1,0 +1,90 @@
+{
+  "created": "2026-11-05T22:05:30.042605+01:00",
+  "partial": false,
+  "n_pairs": 4,
+  "asc_december_included": true,
+  "hyp3_zips_crc_sha_ok": true,
+  "files": [
+    {
+      "file": "NOTAS_INFORME.md",
+      "bytes": 616,
+      "sha256": "b44952b0b3e51f126ed5296419017071b84157722f32cbbf299cba4e3aaea885"
+    },
+    {
+      "file": "RESUMEN_FINAL.json",
+      "bytes": 896,
+      "sha256": "072255469550b27ce28da26321266e5ad8fa40db5995ef99b532912a662d7258"
+    },
+    {
+      "file": "analisis_datos.py",
+      "bytes": 13431,
+      "sha256": "cf8cc7216b87607752067d2d8881898d3e5f6988c88b3cb93c0412ec566bc73a"
+    },
+    {
+      "file": "auditoria_metodo_pares.json",
+      "bytes": 229,
+      "sha256": "3af3674876b556a91594c75347cacd824b304fdb980ceb39f6cf30d074d03ecc"
+    },
+    {
+      "file": "controlled_pairs_descriptive.csv",
+      "bytes": 3674,
+      "sha256": "a656d7d7e92ab23f52898726758dbb6dc4ffe5338e227aeb1a078c3cf6e50fc1"
+    },
+    {
+      "file": "controlled_pairs_descriptive.json",
+      "bytes": 10857,
+      "sha256": "9954f8b1f01053d2dbd410f377690c6cee231335400af08600800da2a0724bbf"
+    },
+    {
+      "file": "controlled_pairs_descriptive_prev_20261105_2115.csv",
+      "bytes": 3290,
+      "sha256": "9e61fd45991efd9d84ee40762577d6f55d2d4ed4077e3c613a158237f0d3a647"
+    },
+    {
+      "file": "egms_aois_y_unidades.json",
+      "bytes": 15472,
+      "sha256": "2de162f9a73d796e989a589d91eabb2f95553a4fd8fff63a09f492e86fd83ed3"
+    },
+    {
+      "file": "egms_resumen_ambos_aoi.csv",
+      "bytes": 1916,
+      "sha256": "6a128e91339198104d05731e8739c180c6890ff169ad3307641ef2191fd21234"
+    },
+    {
+      "file": "fig_coherencia_por_ventana.png",
+      "bytes": 31179,
+      "sha256": "16a33f3ce42a3bd3d048759fe36d4fe88ae4b0a43f76f51b8f7dcf28e1deeab1"
+    },
+    {
+      "file": "gnss_estado.json",
+      "bytes": 2209,
+      "sha256": "20a1dc44519513ab1c35e03bd9356fa491429184ef75e651fa2db30ade764af4"
+    },
+    {
+      "file": "hyp3_jobs_sanitized.json",
+      "bytes": 3068,
+      "sha256": "576a2ef7131cd36b29acd5c2e48d91be1aeca7d7ea4706b737695e1baa4cf0aa"
+    },
+    {
+      "file": "hyp3_six_zips_crc_sha256.json",
+      "bytes": 1481,
+      "sha256": "7e86754e1f73f0851b2f85a49e2e55e0096f75c9bac1f1b3fa98544d4e86f9ac"
+    },
+    {
+      "file": "los_projection_note.json",
+      "bytes": 1743,
+      "sha256": "aecb30ab01e1448731984504f2d4a00c8c669ae3d14021718b76a201e62d7302"
+    },
+    {
+      "file": "native_quality_all.json",
+      "bytes": 8567,
+      "sha256": "2d9e8eede12a4c2319a1a2e3583a030f65a462e2e9bc71f57519db0339690679"
+    },
+    {
+      "file": "pares_controlados.py",
+      "bytes": 3163,
+      "sha256": "5a7d49f981fee597186dd24aae15b2c1c65d8a7d732ce8327955c0cf0906741d"
+    }
+  ],
+  "purpose": "Cloud/GitHub final viability inputs (no signed URLs, no secrets, no repo mutation)"
+}

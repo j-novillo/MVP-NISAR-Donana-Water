@@ -1,0 +1,231 @@
+{
+  "definitions": {
+    "native_aoi_n": "Centros de p\u00edxel nativos en AOI 5x5 (denominador espacial).",
+    "native_valid_n": "Fase/coh finitas y componentes v\u00e1lidos; sin umbral 0.3.",
+    "usable_aoi_fraction": "(native_valid AND coh>=0.3)/native_aoi_n. M\u00e1scara condicionada al umbral 0.3 sobre AOI completo; NO es n_common_usable ni n temporal.",
+    "n_common_valid": "Soporte com\u00fan sin umbral 0.3 (espacial).",
+    "n_common_usable": "Soporte com\u00fan con coh>=0.3 en ambos (espacial).",
+    "n_independent_time_pairs": "Siempre 1 por registro.",
+    "window_id": "Incluye geometr\u00eda S1 para no colisionar Asc/Desc misma fecha.",
+    "orbit_source": "orbita_desde_los(LOS, look); S1 mira Right; no letras S1AA/S1CC.",
+    "accuracy_improvement_pct": "Siempre null: sin GNSS LOS local anclado."
+  },
+  "products": [
+    {
+      "product": "NISAR_L2_PR_GUNW_004_015_A_021_006_2000_SH_20251030T053143_20251030T053218_20251123T053144_20251123T053219_X05010_N_F_J_001",
+      "geometry": "Ascending/Left",
+      "native_dates": [
+        "20251030",
+        "20251123"
+      ],
+      "native_aoi_n": 4111,
+      "native_valid_n": 2950,
+      "coherence_mean_valid": 0.5264055132865906,
+      "usable_pixels": 2701,
+      "usable_aoi_fraction": 0.6570177572366821,
+      "usable_definition": "(native_valid AND coh>=0.3)/native_aoi_n. M\u00e1scara condicionada al umbral 0.3 sobre AOI completo; NO es n_common_usable ni n temporal.",
+      "posting_m": 80,
+      "crs": "EPSG:32630",
+      "unit_vector_enu": [
+        0.6853090524673462,
+        0.2069024294614792,
+        0.6982427137387441
+      ],
+      "incidence_deg": 45.7138138424947,
+      "look_direction": "Left",
+      "orbita": "Ascending",
+      "orbit_source": "hdf5_orbitPassDirection",
+      "is_accuracy": false,
+      "n_temporal_pairs_represented": 1
+    },
+    {
+      "product": "NISAR_L2_PR_GUNW_007_015_A_021_008_2000_SH_20251205T053144_20251205T053219_20251217T053145_20251217T053220_X05010_N_F_J_001",
+      "geometry": "Ascending/Left",
+      "native_dates": [
+        "20251205",
+        "20251217"
+      ],
+      "native_aoi_n": 4111,
+      "native_valid_n": 4051,
+      "coherence_mean_valid": 0.6680607199668884,
+      "usable_pixels": 3986,
+      "usable_aoi_fraction": 0.9695937728046704,
+      "usable_definition": "(native_valid AND coh>=0.3)/native_aoi_n. M\u00e1scara condicionada al umbral 0.3 sobre AOI completo; NO es n_common_usable ni n temporal.",
+      "posting_m": 80,
+      "crs": "EPSG:32630",
+      "unit_vector_enu": [
+        0.6853809356689453,
+        0.20685455203056335,
+        0.6981863414059287
+      ],
+      "incidence_deg": 45.71832557350892,
+      "look_direction": "Left",
+      "orbita": "Ascending",
+      "orbit_source": "hdf5_orbitPassDirection",
+      "is_accuracy": false,
+      "n_temporal_pairs_represented": 1
+    },
+    {
+      "product": "S1AA_20251029T182645_20251122T182644_VVP024_INT80_G_weF_DCB0",
+      "geometry": "Ascending/Right",
+      "native_dates": [
+        "20251029",
+        "20251122"
+      ],
+      "native_aoi_n": 4106,
+      "native_valid_n": 4106,
+      "coherence_mean_valid": 0.701284034570513,
+      "usable_pixels": 4038,
+      "usable_aoi_fraction": 0.9834388699464198,
+      "usable_definition": "(native_valid AND coh>=0.3)/native_aoi_n. M\u00e1scara condicionada al umbral 0.3 sobre AOI completo; NO es n_common_usable ni n temporal.",
+      "posting_m": 80,
+      "crs": "EPSG:32629",
+      "unit_vector_enu": [
+        -0.6540950685850881,
+        -0.11305273766822059,
+        0.7479162568549893
+      ],
+      "incidence_deg": 41.58980140840091,
+      "look_direction": "Right",
+      "orbita": "Ascending",
+      "orbit_source": "orbita_desde_los+Right",
+      "is_accuracy": false,
+      "n_temporal_pairs_represented": 1
+    },
+    {
+      "product": "S1AA_20251122T182644_20251204T182643_VVP012_INT80_G_weF_4D20",
+      "geometry": "Ascending/Right",
+      "native_dates": [
+        "20251122",
+        "20251204"
+      ],
+      "native_aoi_n": 4106,
+      "native_valid_n": 4106,
+      "coherence_mean_valid": 0.9134277960128359,
+      "usable_pixels": 4087,
+      "usable_aoi_fraction": 0.9953726254262055,
+      "usable_definition": "(native_valid AND coh>=0.3)/native_aoi_n. M\u00e1scara condicionada al umbral 0.3 sobre AOI completo; NO es n_common_usable ni n temporal.",
+      "posting_m": 80,
+      "crs": "EPSG:32629",
+      "unit_vector_enu": [
+        -0.6540688261624248,
+        -0.11302185500324972,
+        0.7479438924651647
+      ],
+      "incidence_deg": 41.587415964834456,
+      "look_direction": "Right",
+      "orbita": "Ascending",
+      "orbit_source": "orbita_desde_los+Right",
+      "is_accuracy": false,
+      "n_temporal_pairs_represented": 1
+    },
+    {
+      "product": "S1AA_20251204T182643_20251216T182642_VVP012_INT80_G_weF_6F69",
+      "geometry": "Ascending/Right",
+      "native_dates": [
+        "20251204",
+        "20251216"
+      ],
+      "native_aoi_n": 4106,
+      "native_valid_n": 4106,
+      "coherence_mean_valid": 0.8901084507645425,
+      "usable_pixels": 4090,
+      "usable_aoi_fraction": 0.9961032635168047,
+      "usable_definition": "(native_valid AND coh>=0.3)/native_aoi_n. M\u00e1scara condicionada al umbral 0.3 sobre AOI completo; NO es n_common_usable ni n temporal.",
+      "posting_m": 80,
+      "crs": "EPSG:32629",
+      "unit_vector_enu": [
+        -0.6539217746127803,
+        -0.11300157072193481,
+        0.7480755246194615
+      ],
+      "incidence_deg": 41.57605223761269,
+      "look_direction": "Right",
+      "orbita": "Ascending",
+      "orbit_source": "orbita_desde_los+Right",
+      "is_accuracy": false,
+      "n_temporal_pairs_represented": 1
+    },
+    {
+      "product": "S1CC_20251029T063440_20251122T063439_VVP024_INT80_G_weF_B181",
+      "geometry": "Descending/Right",
+      "native_dates": [
+        "20251029",
+        "20251122"
+      ],
+      "native_aoi_n": 4106,
+      "native_valid_n": 2415,
+      "coherence_mean_valid": 0.4251087355749454,
+      "usable_pixels": 1591,
+      "usable_aoi_fraction": 0.387481734047735,
+      "usable_definition": "(native_valid AND coh>=0.3)/native_aoi_n. M\u00e1scara condicionada al umbral 0.3 sobre AOI completo; NO es n_common_usable ni n temporal.",
+      "posting_m": 80,
+      "crs": "EPSG:32629",
+      "unit_vector_enu": [
+        0.502138698290467,
+        -0.0976159688876801,
+        0.8592600860577503
+      ],
+      "incidence_deg": 30.766393366553668,
+      "look_direction": "Right",
+      "orbita": "Descending",
+      "orbit_source": "orbita_desde_los+Right",
+      "is_accuracy": false,
+      "n_temporal_pairs_represented": 1
+    },
+    {
+      "product": "S1CC_20251204T063439_20251216T063438_VVP012_INT80_G_weF_C9F5",
+      "geometry": "Descending/Right",
+      "native_dates": [
+        "20251204",
+        "20251216"
+      ],
+      "native_aoi_n": 4106,
+      "native_valid_n": 2508,
+      "coherence_mean_valid": 0.8873373562651293,
+      "usable_pixels": 2501,
+      "usable_aoi_fraction": 0.6091086215294691,
+      "usable_definition": "(native_valid AND coh>=0.3)/native_aoi_n. M\u00e1scara condicionada al umbral 0.3 sobre AOI completo; NO es n_common_usable ni n temporal.",
+      "posting_m": 80,
+      "crs": "EPSG:32629",
+      "unit_vector_enu": [
+        0.5019900242949309,
+        -0.09758147339355581,
+        0.8593508720321776
+      ],
+      "incidence_deg": 30.7562232148761,
+      "look_direction": "Right",
+      "orbita": "Descending",
+      "orbit_source": "orbita_desde_los+Right",
+      "is_accuracy": false,
+      "n_temporal_pairs_represented": 1
+    },
+    {
+      "product": "S1DD_20261020T062623_20261101T062623_VVR012_INT80_G_weF_BA12",
+      "geometry": "Descending/Right",
+      "native_dates": [
+        "20261020",
+        "20261101"
+      ],
+      "native_aoi_n": 4112,
+      "native_valid_n": 1115,
+      "coherence_mean_valid": 0.9427516582568131,
+      "usable_pixels": 1112,
+      "usable_aoi_fraction": 0.2704280155642023,
+      "usable_definition": "(native_valid AND coh>=0.3)/native_aoi_n. M\u00e1scara condicionada al umbral 0.3 sobre AOI completo; NO es n_common_usable ni n temporal.",
+      "posting_m": 80,
+      "crs": "EPSG:32630",
+      "unit_vector_enu": [
+        0.6604149715282628,
+        -0.1134470168352999,
+        0.7422813084733967
+      ],
+      "incidence_deg": 42.073887650795726,
+      "look_direction": "Right",
+      "orbita": "Descending",
+      "orbit_source": "orbita_desde_los+Right",
+      "is_accuracy": false,
+      "n_temporal_pairs_represented": 1
+    }
+  ]
+}

@@ -1,9 +1,11 @@
 # Guía de ejecución local (PC propio)
 
-El informe provisional, con lo que ya se puede decir y lo que falta, está en
-`docs/15-informe-viabilidad-provisional.md`. Esta guía solo dice cómo
-descargar y arrancar. Los secretos van en `.env` (ver `.env.example`); no se
-versionan.
+El cierre del estudio actual está en `docs/16-informe-viabilidad-final.md`.
+El texto de las 21:14 (`docs/15-informe-viabilidad-provisional.md`) quedó
+superado. Esta guía solo dice cómo descargar y arrancar. Los secretos van
+en `.env` (ver `.env.example`); no se versionan. El producto Sentinel-1 del
+20 de octubre al 1 de noviembre de 2026 es otra ventana: el cruce con los
+GUNW NISAR de 2025 usa octubre–diciembre de 2025.
 
 Cómo instalar el entorno, qué datos bajar, desde dónde, con qué cuentas, y
 cómo lanzar la tubería completa más la comparación NISAR vs Sentinel-1.
@@ -188,7 +190,9 @@ python src/figuras.py
 # 4) Comparación. Escribe en data/comparacion/ y no pisa la instantánea de docs/.
 python src/comparar_nisar_s1.py
 
-# Catálogo S1 en la ventana NISAR: por defecto solo el filtro, sin red.
+# Catálogo S1 de la ventana de los GUNW NISAR de 2025 (30 oct–17 dic).
+# El producto S1DD del 20 oct al 1 nov de 2026 es otra ventana. El cruce
+# con esos GUNW usa este intervalo.
 python src/catalogo_s1_solape.py --inicio 2025-10-01 --fin 2025-12-31
 # En el box, si se quiere el listado CMR (metadatos, no los SLC):
 # python src/catalogo_s1_solape.py --inicio 2025-10-01 --fin 2025-12-31 --consultar

@@ -1,6 +1,8 @@
 # Informe de viabilidad provisional
 
-**Estado: provisional.** Paquete del 5 de noviembre de 2026, 21:14 (Europa/Madrid), `partial: true`. Falta el cuarto caso: el Sentinel-1 ascendente del 4 al 16 de diciembre de 2025. El job HyP3 ya figura como SUCCEEDED; el ZIP seguía descargándose cuando se cerró este paquete. Otro trabajo lo incorporará. Este texto no es el informe final y no se fusiona a `main` por sí solo.
+**Superado.** El paquete de las 21:14 (`partial: true`) queda sustituido por el de las 22:05 (`partial: false`), que ya incluye el ascendente de diciembre. El texto vigente es [el informe final del estudio actual](16-informe-viabilidad-final.md). Lo que sigue es el registro de aquella entrega incompleta y no debe citarse como resultado.
+
+**Estado histórico: provisional.** Paquete del 5 de noviembre de 2026, 21:14 (Europa/Madrid), `partial: true`. Falta el cuarto caso: el Sentinel-1 ascendente del 4 al 16 de diciembre de 2025. El job HyP3 ya figura como SUCCEEDED; el ZIP seguía descargándose cuando se cerró este paquete.
 
 No se ha vuelto a calcular ningún ráster. Las cifras salen de `docs/evidencia-parcial-2026-11-05/`. No hay porcentaje de exactitud.
 
