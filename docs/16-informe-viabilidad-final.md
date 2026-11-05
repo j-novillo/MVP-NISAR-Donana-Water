@@ -2,7 +2,7 @@
 
 **Cierre de esta entrega, no validación científica definitiva.** Paquete del 5 de noviembre de 2026, 22:05 (Europa/Madrid). Sustituye al provisional de las 21:14. Manifiesto: `partial: false`. Los seis ZIP HyP3 tienen CRC de ZIP correcto; no se han vuelto a descargar ni se han lanzado jobs.
 
-**Veredicto.** Piloto condicionado para observar deformación y para ordenar inspecciones. No está validado para detectar pozos ni para demostrar ilegalidad.
+**Veredicto.** Piloto condicionado: genera y analiza interferogramas y desplazamiento aparente. La deformación real queda sin demostrar: el signo de la fase no está anclado, la atmósfera no está tratada y no hay RMSE con control local. La priorización de inspecciones es una vía de desarrollo, condicionada a integrar otras fuentes y a evaluar etiquetas. No está validado para detectar pozos ni para demostrar ilegalidad.
 
 La exactitud sigue `no_evaluable`. `accuracy_improvement_pct` es null. No se aplica `100 * (err_S1 − err_NISAR) / err_S1`: no hay control independiente dentro de la tesela y el signo de la fase no está anclado.
 
@@ -10,8 +10,9 @@ La exactitud sigue `no_evaluable`. `accuracy_improvement_pct` es null. No se apl
 
 | Pregunta | Respuesta con esta evidencia |
 |---|---|
-| ¿Hay observación de deformación ejecutable? | Sí, como piloto, en la tesela de 5×5 km de Rociana. |
-| ¿Está validada? | No. |
+| ¿Qué produce el piloto en la tesela? | Interferogramas y desplazamiento aparente en 5×5 km de Rociana. El signo no está anclado, la atmósfera no está tratada y no hay RMSE con control local. |
+| ¿Queda demostrada la deformación real? | No. |
+| ¿La priorización de inspecciones está validada? | No. Es una vía de desarrollo, condicionada a integrar otras fuentes y a evaluar etiquetas. |
 | ¿Cuántas ventanas NISAR hay? | **Dos:** 30 oct–23 nov 2025 (24 días) y 5–17 dic 2025 (12 días). No comparten fechas. |
 | ¿Cuántas comparaciones hay? | **Cuatro:** cada ventana NISAR contra un Sentinel-1 ascendente y uno descendente, con un día de desfase en cada extremo. Cuatro comparaciones no son cuatro ventanas NISAR. |
 | ¿NISAR supera a Sentinel-1 en coherencia? | No de forma uniforme. En tres de los cuatro casos, en el soporte común, Sentinel-1 está por encima. |
@@ -62,14 +63,14 @@ EGMS release 2020_2025 está leído. Es producto de Sentinel-1, no verdad indepe
 
 ## Qué se puede hacer con esto, antes de descartar el proyecto
 
-El piloto ya enseña deformación interferométrica en la tesela, con geometría y longitud de onda leídas del producto, y enseña que la coherencia de banda L no gana siempre a la de banda C en este cultivo y en estas fechas. Eso sirve para no seguir con una hipótesis de superioridad uniforme y para ordenar dónde mirar, no para sancionar.
+El piloto ya genera y analiza interferogramas en la tesela, con geometría y longitud de onda leídas del producto. El resultado es desplazamiento aparente. Con el signo sin anclar, la atmósfera sin tratar y sin RMSE frente a un control local, la deformación real queda sin demostrar. En los cuatro casos, la coherencia de banda L no queda por encima de la de banda C en todos ellos. La priorización de inspecciones no está validada: es una vía de desarrollo, condicionada a integrar otras fuentes y a evaluar etiquetas.
 
 Orden de trabajo, si se continúa:
 
 1. Una red de pares de 12 días que compartan fechas, en una geometría declarada, en lugar de dos pares NISAR sueltos.
 2. Un control geodésico dentro de la tesela, signo anclado, y la proyección de ese control a cada línea de visión. Los mapas de incidencia y de look de HyP3 son el insumo; no se comparan LOS distintos sin esa proyección. La atmósfera se trata antes de interpretar milímetros.
-3. Series de la CHG solo como hidrología, en un informe distinto del desplazamiento.
-4. Sentinel-2, evapotranspiración o calendario de riego, más SIGPAC y concesiones, para priorizar parcelas. Si se mide el detector, es precisión y recall sobre una etiqueta cerrada de antemano. No se llama prueba de ilegalidad.
+3. Series de la CHG interpretadas en conjunto como variable hidrológica distinta del desplazamiento.
+4. Sentinel-2, evapotranspiración o calendario de riego, más SIGPAC y concesiones, como fuentes a integrar antes de priorizar parcelas, y precisión y recall sobre una etiqueta cerrada de antemano. No se llama prueba de ilegalidad.
 
 ## Criterios de éxito, fijados antes de la próxima medida
 
