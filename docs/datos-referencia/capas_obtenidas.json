@@ -1,0 +1,10 @@
+{
+  "piezometros.gpkg": {
+    "n": 71,
+    "crs": "EPSG:4326"
+  },
+  "piezometros_chg.gpkg": {
+    "n": 53,
+    "crs": "EPSG:4326"
+  }
+}

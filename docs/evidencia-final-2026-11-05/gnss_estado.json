@@ -1,0 +1,62 @@
+{
+  "updated": "2026-11-05T21:14:06.187900+01:00",
+  "status": "regional_endpoints_available_not_local_anchored_control",
+  "stations": [
+    {
+      "code": "HUEL",
+      "source": "https://geodesy.unr.edu/gps_timeseries/IGS20/tenv3/IGS20/HUEL.tenv3",
+      "bytes": 1673616,
+      "start": "2003-04-14",
+      "end": "2026-10-17",
+      "n_overlap": 373,
+      "distance_reference_km": 32.16641951740659,
+      "inside_aoi": false,
+      "units": "m; NGL tenv3 README",
+      "frame": "IGS20",
+      "spatially_valid_groundtruth_for_Rociana": false
+    },
+    {
+      "code": "HULV",
+      "source": "https://geodesy.unr.edu/gps_timeseries/IGS20/tenv3/IGS20/HULV.tenv3",
+      "bytes": 1507764,
+      "start": "2006-01-16",
+      "end": "2026-10-17",
+      "n_overlap": 344,
+      "distance_reference_km": 29.65291172209108,
+      "inside_aoi": false,
+      "units": "m; NGL tenv3 README",
+      "frame": "IGS20",
+      "spatially_valid_groundtruth_for_Rociana": false
+    },
+    {
+      "code": "HUE1",
+      "source": "https://geodesy.unr.edu/gps_timeseries/IGS20/tenv3/IGS20/HUE1.tenv3",
+      "bytes": 634440,
+      "start": "2017-07-13",
+      "end": "2026-10-17",
+      "n_overlap": 376,
+      "distance_reference_km": 29.235291484422547,
+      "inside_aoi": false,
+      "units": "m; NGL tenv3 README",
+      "frame": "IGS20",
+      "spatially_valid_groundtruth_for_Rociana": false
+    },
+    {
+      "code": "LEBR",
+      "source": "https://geodesy.unr.edu/gps_timeseries/IGS20/tenv3/IGS20/LEBR.tenv3",
+      "bytes": 1324164,
+      "start": "2007-07-05",
+      "end": "2026-10-17",
+      "n_overlap": 343,
+      "distance_reference_km": 60.95982459862502,
+      "inside_aoi": false,
+      "units": "m; NGL tenv3 README",
+      "frame": "IGS20",
+      "spatially_valid_groundtruth_for_Rociana": false
+    }
+  ],
+  "endpoint_differences_file": "gnss/endpoint_differences_enu.csv",
+  "hallazgos_section": 10,
+  "do_not_claim": "No afirmar ausencia de GNSS.",
+  "correct_claim": "Existen series NGL IGS20 HUEL/HULV/HUE1/LEBR con extremos en ventanas S1/NISAR 2025; distan 29\u201361 km del centro Rociana; no son control local anclado ni verdad de parcela; no se usaron para RMSE LOS ni % exactitud."
+}

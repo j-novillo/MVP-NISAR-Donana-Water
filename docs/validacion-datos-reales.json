@@ -1,0 +1,58 @@
+{
+  "alcance": "real",
+  "decision_tuberia": "indeterminado",
+  "decision_cientifica_donana": "indeterminado",
+  "advertencia": "Resultado sobre los productos presentes en data/raw. Revise el signo de la fase y la completitud del registro de pozos antes de interpretar un go.",
+  "criterios": [
+    {
+      "id": "coherencia",
+      "titulo": "Coherencia InSAR en campaña de riego",
+      "valor": 0.40404040404040403,
+      "resultado": "go",
+      "detalle": "40.4% de los píxeles nativos tienen coherencia media > 0.3 en los interferogramas de abril-junio. Go por encima del 30 %. No-go si la cobertura coherente en cultivo se queda por debajo del 5 %.",
+      "umbral_go": 0.3,
+      "umbral_nogo": 0.05
+    },
+    {
+      "id": "senal",
+      "titulo": "Señal de subsidencia local",
+      "valor": {
+        "mediana_exceso_en_anomalias_mm": 3.1222235308373056,
+        "p90_exceso_aoi_mm": 1.4477672763007408,
+        "fraccion_anomalias_agrupadas": 0.8333333333333334,
+        "n_celdas_z": 12
+      },
+      "resultado": "indeterminado",
+      "detalle": "La mediana del exceso de hundimiento (celda menos anillo de 400–1500 m) dentro de las celdas con z > 2.0 es 3.12 mm. El percentil 90 de todo el AOI es 1.45 mm y no se usa como umbral: un cono local no mueve ese percentil. El 83% de las anomalías tiene otra a menos de 250 m. Go si el cono mide al menos 5 mm y las anomalías se agrupan; no-go si se queda por debajo de 2 mm o el z-score no tiene estructura.",
+      "umbral_go": 5.0,
+      "umbral_nogo": 2.0
+    },
+    {
+      "id": "legal",
+      "titulo": "Discriminación legal",
+      "valor": null,
+      "resultado": "indeterminado",
+      "detalle": "Faltan la capa de pozos registrados y el polígono SAR. Hay 12 celdas con z > 2.0. Sin esas capas no se puede decir si las anomalías caen solo sobre pozos legales.",
+      "umbral_go": "anomalías fuera de SAR y sin pozo, coincidiendo con WWF/CHG",
+      "umbral_nogo": "anomalías solo sobre pozos legales"
+    },
+    {
+      "id": "pozos_cerrados",
+      "titulo": "Validación con pozos cerrados",
+      "valor": {
+        "recall": null,
+        "detectados": 0,
+        "total": 0
+      },
+      "resultado": "indeterminado",
+      "detalle": "No hay capa de pozos cerrados. En datos reales hay que georreferenciar los cierres de la CHG (847 citados desde 2024 no están en un shapefile único): ver docs/02-descarga-de-datos.md.",
+      "umbral_go": 0.5,
+      "umbral_nogo": 0.2
+    }
+  ],
+  "apoyo_piezometros": {
+    "disponible": false,
+    "detalle": "No hay piezómetros. En datos reales, descargar la red SIA (docs/02)."
+  },
+  "aoi": "tesela_rociana"
+}

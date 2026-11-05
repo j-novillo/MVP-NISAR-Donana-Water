@@ -1,0 +1,46 @@
+# Credenciales: nunca se versionan
+.env
+.env.*
+!.env.example
+
+# Entornos y cachés
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Datos descargados o generados (pueden pesar mucho y no son fuente)
+data/raw/
+data/procesado/
+data/geotiff/
+data/figuras/
+data/*.parquet
+data/*.gpkg
+data/*.geojson
+data/*.json
+data/*.csv
+data/*.md
+
+# Mantener el directorio de datos en git
+!data/.gitkeep
+
+# Salidas locales
+*.tif
+*.tiff
+*.h5
+*.nc
+.streamlit/secrets.toml
+
+# Logs locales
+data/logs/
+*.part
+*.zip
+data/procesado_nisar/
+data/comparacion/
+data/catalogo/
+data/hyp3/
+data/egms/

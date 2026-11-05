@@ -1,0 +1,12 @@
+name: poc-donana-mintpy
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.11
+  - mintpy
+  - isce2
+  - h5py
+  - numpy
+# Entorno aparte para la opción B. ISCE2 + MintPy no hacen falta para
+# src/procesar_insar.py. La receta y el formato de entrada están en
+# docs/08-opcion-b-mintpy.md y src/opcion_b_mintpy.py.

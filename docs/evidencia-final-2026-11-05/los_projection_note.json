@@ -1,0 +1,60 @@
+{
+  "updated": "2026-11-05T21:10:36.093395+01:00",
+  "lambda_nisar_m": 0.2439320244,
+  "epsg_nisar": 32630,
+  "accuracy_improvement_pct": null,
+  "estado": "no_evaluable",
+  "pairs": [
+    {
+      "pair_label": "S1_desc_octnov",
+      "nisar_Ascending_Left_enu": [
+        0.6853090524673462,
+        0.2069024294614792,
+        0.6982427137387441
+      ],
+      "s1_Right_enu": [
+        0.5021383769986834,
+        -0.09761583819911554,
+        0.8592602623639779
+      ],
+      "s1_orbit": "Descending",
+      "angle_deg": 22.49764834002579,
+      "directly_comparable_los": false,
+      "note": "Project GNSS ENU to each sensor LOS separately; do not treat maps as same-component displacement"
+    },
+    {
+      "pair_label": "S1_desc_dec",
+      "nisar_Ascending_Left_enu": [
+        0.6853090524673462,
+        0.2069024294614792,
+        0.6982427137387441
+      ],
+      "s1_Right_enu": [
+        0.5019897906312295,
+        -0.09758134356838313,
+        0.8593509943494587
+      ],
+      "s1_orbit": "Descending",
+      "angle_deg": 22.502340242495173,
+      "directly_comparable_los": false,
+      "note": "Project GNSS ENU to each sensor LOS separately; do not treat maps as same-component displacement"
+    },
+    {
+      "pair_label": "S1_asc_octnov",
+      "nisar_Ascending_Left_enu": [
+        0.6853090524673462,
+        0.2069024294614792,
+        0.6982427137387441
+      ],
+      "s1_Right_enu": [
+        -0.654084926805587,
+        -0.1130524213417592,
+        0.747925169087453
+      ],
+      "s1_orbit": "Ascending",
+      "angle_deg": 87.10004488535557,
+      "directly_comparable_los": false,
+      "note": "Project GNSS ENU to each sensor LOS separately; do not treat maps as same-component displacement"
+    }
+  ]
+}

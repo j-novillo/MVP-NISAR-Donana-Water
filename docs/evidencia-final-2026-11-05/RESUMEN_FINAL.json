@@ -1,0 +1,23 @@
+{
+  "updated": "2026-11-05T22:05:30.042605+01:00",
+  "zone": "Europe/Madrid",
+  "status": "final_package_ready_for_cloud_report",
+  "provisional_partial_2115_superseded": true,
+  "n_pairs": 4,
+  "windows": [
+    "NISAR_20251030_20251123__S1_20251029_20251122__AscendingRight",
+    "NISAR_20251030_20251123__S1_20251029_20251122__DescendingRight",
+    "NISAR_20251205_20251217__S1_20251204_20251216__AscendingRight",
+    "NISAR_20251205_20251217__S1_20251204_20251216__DescendingRight"
+  ],
+  "asc_december_included": true,
+  "accuracy_improvement_pct": null,
+  "metric_role": "exploratory_product_quality_NOT_accuracy",
+  "hyp3_zips_verified": 6,
+  "egms_units": {
+    "mean_velocity": "mm/year",
+    "rmse_ts": "mm"
+  },
+  "gnss": "regional HUEL/HULV/HUE1/LEBR endpoints exist; no local Rociana LOS-anchored control",
+  "package_dir": "/workspace/donana-overlap-20261105/paquete_informe_cloud"
+}

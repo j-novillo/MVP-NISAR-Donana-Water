@@ -1,0 +1,13 @@
+aoi,product,n_aoi,first_date,last_date,n_dates,mean_velocity_median_mm_per_year,mean_velocity_p10_mm_per_year,mean_velocity_p90_mm_per_year,rmse_ts_median_mm,temporal_coherence_median,independent_truth,coordinate_crs,n_dates_nisar_octnov,n_dates_nisar_dec
+tesela_5x5,EGMS_L2b_147_0218_IW2_VV_2020_2025_1,14062,20201206,20251128,193,0.3,-0.6,1.2,3.0,0.79,False,EPSG:3035 (confirmed via L3 TIFF and XML),4,0
+tesela_5x5,EGMS_L3_E28N17_100km_U_2020_2025_1,507,20201209,20251125,303,-0.4,-1.7,0.1,1.1,,False,EPSG:3035 (confirmed via L3 TIFF and XML),4,0
+tesela_5x5,EGMS_L3_E28N17_100km_E_2020_2025_1,507,20201209,20251125,303,-1.0,-1.7,0.0,1.4,,False,EPSG:3035 (confirmed via L3 TIFF and XML),4,0
+tesela_5x5,EGMS_L2b_147_0218_IW3_VV_2020_2025_1,751,20201206,20251128,193,0.3,-1.1,1.1,3.3,0.75,False,EPSG:3035 (confirmed via L3 TIFF and XML),4,0
+tesela_5x5,EGMS_L2b_052_0853_IW1_VV_2020_2025_1,10861,20201206,20251128,198,-0.6,-1.5,0.2,2.9,0.8,False,EPSG:3035 (confirmed via L3 TIFF and XML),4,0
+tesela_5x5,EGMS_L2b_154_0854_IW3_VV_2020_2025_1,14261,20201201,20251129,200,-1.1,-2.1,-0.3,3.0,0.79,False,EPSG:3035 (confirmed via L3 TIFF and XML),5,0
+bbox_completo,EGMS_L2b_052_0853_IW1_VV_2020_2025_1,64909,20201206,20251128,198,-0.8,-2.8,0.3,2.9,0.79,False,EPSG:4326 lonlat in CSV,4,0
+bbox_completo,EGMS_L2b_147_0218_IW2_VV_2020_2025_1,43935,20201206,20251128,193,0.3,-1.3,1.4,3.0,0.79,False,EPSG:4326 lonlat in CSV,4,0
+bbox_completo,EGMS_L2b_147_0218_IW3_VV_2020_2025_1,81918,20201206,20251128,193,0.4,-0.6,1.3,3.0,0.79,False,EPSG:4326 lonlat in CSV,4,0
+bbox_completo,EGMS_L2b_154_0854_IW3_VV_2020_2025_1,67608,20201201,20251129,200,-1.0,-2.2,0.0,3.1,0.77,False,EPSG:4326 lonlat in CSV,5,0
+bbox_completo,EGMS_L3_E28N17_100km_E_2020_2025_1,11135,20201209,20251125,303,-1.0,-2.2,0.3,1.6,,False,EPSG:3035,4,0
+bbox_completo,EGMS_L3_E28N17_100km_U_2020_2025_1,11135,20201209,20251125,303,-0.5,-2.1,0.4,1.3,,False,EPSG:3035,4,0

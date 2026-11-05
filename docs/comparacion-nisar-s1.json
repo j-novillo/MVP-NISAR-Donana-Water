@@ -1,0 +1,134 @@
+{
+  "aoi": "tesela_rociana",
+  "umbral_coherencia": 0.3,
+  "solape_temporal": {
+    "hay_solape": false,
+    "motivo": "S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común",
+    "s1": [
+      "2022-01-06",
+      "2024-09-16"
+    ],
+    "nisar": [
+      "2025-10-30",
+      "2025-11-23"
+    ]
+  },
+  "sentinel1": {
+    "plataforma": "SENTINEL-1",
+    "n_interferogramas": 8,
+    "fechas_min": "2022-01-06",
+    "fechas_max": "2024-09-16",
+    "coherencia_media": 0.3547622765150753,
+    "coherencia_mediana": 0.3045437225424782,
+    "fraccion_usable": 0.5095427059712774,
+    "ruido_std_mm_zona_estable": 4.725515168095703,
+    "n_pixeles_aoi": 3969,
+    "n_pixeles_zona_estable": 11,
+    "notas": []
+  },
+  "nisar": {
+    "plataforma": "NISAR",
+    "n_interferogramas": 1,
+    "fechas_min": "2025-10-30",
+    "fechas_max": "2025-11-23",
+    "coherencia_media": 0.5153952344668692,
+    "coherencia_mediana": 0.5216261871293995,
+    "fraccion_usable": 0.9206827309236948,
+    "ruido_std_mm_zona_estable": 3.5390323153366334,
+    "n_pixeles_aoi": 2988,
+    "n_pixeles_zona_estable": 29,
+    "notas": []
+  },
+  "mejora_producto_calidad": {
+    "coherencia_media": {
+      "estado": "no_evaluable",
+      "mejora_pct": null,
+      "motivo": "Cifras medidas el 2026-11-04 sobre épocas distintas (S1 2022-01-06–2024-09-16, 8 pares; NISAR 2025-10-30–2025-11-23, 1 par). No se han recalculado. El porcentaje de mejora se retira: no es evaluable."
+    },
+    "fraccion_usable": {
+      "estado": "no_evaluable",
+      "mejora_pct": null,
+      "motivo": "Cifras medidas el 2026-11-04 sobre épocas distintas (S1 2022-01-06–2024-09-16, 8 pares; NISAR 2025-10-30–2025-11-23, 1 par). No se han recalculado. El porcentaje de mejora se retira: no es evaluable."
+    },
+    "ruido_std_mm_zona_estable": {
+      "estado": "no_evaluable",
+      "mejora_pct": null,
+      "motivo": "Cifras medidas el 2026-11-04 sobre épocas distintas (S1 2022-01-06–2024-09-16, 8 pares; NISAR 2025-10-30–2025-11-23, 1 par). No se han recalculado. El porcentaje de mejora se retira: no es evaluable."
+    }
+  },
+  "mejora_exactitud_vs_verdad": {
+    "rmse_gnss_los": {
+      "estado": "no_evaluable",
+      "mejora_pct": null,
+      "motivos": [
+        "S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común",
+        "no hay series GNSS descargables (NGL tenv3 404; hace falta RINEX de RAP/IGN procesado a ENU/LOS)",
+        "no hay piezometros_niveles.csv (la CHG solo ofrece series por visor web, sin API CSV estable)",
+        "no hay productos EGMS locales (API archive exige login CLMS)"
+      ]
+    },
+    "correlacion_piezometros": {
+      "estado": "no_evaluable",
+      "mejora_pct": null,
+      "motivos": [
+        "S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común",
+        "no hay series GNSS descargables (NGL tenv3 404; hace falta RINEX de RAP/IGN procesado a ENU/LOS)",
+        "no hay piezometros_niveles.csv (la CHG solo ofrece series por visor web, sin API CSV estable)",
+        "no hay productos EGMS locales (API archive exige login CLMS)"
+      ]
+    },
+    "rmse_egms": {
+      "estado": "no_evaluable",
+      "mejora_pct": null,
+      "motivos": [
+        "S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común",
+        "no hay series GNSS descargables (NGL tenv3 404; hace falta RINEX de RAP/IGN procesado a ENU/LOS)",
+        "no hay piezometros_niveles.csv (la CHG solo ofrece series por visor web, sin API CSV estable)",
+        "no hay productos EGMS locales (API archive exige login CLMS)"
+      ]
+    }
+  },
+  "verdad_terreno_disponible": {
+    "piezometros_puntos": true,
+    "piezometros_niveles_csv": false,
+    "gnss_series": [],
+    "egms_productos": [],
+    "gnss_catalogo": "/workspace/MVP-NISAR-Donana-Water/data/raw/gnss/estaciones_cercanas.csv"
+  },
+  "advertencias": [
+    "Estado no_evaluable. No hay porcentaje global de mejora.",
+    "Las medias históricas de coherencia, fracción usable y dispersión urbana no son exactitud.",
+    "La dispersión espacial urbana no es ruido instrumental.",
+    "El nivel piezométrico no es desplazamiento.",
+    "EGMS proviene de Sentinel-1 y no es verdad de terreno independiente.",
+    "La subsidencia no detecta un pozo ni una ilegalidad; la falta de inventario no equivale a ilegalidad."
+  ],
+  "estado_comparacion": "no_evaluable",
+  "porcentaje_global": null,
+  "exploratorio_historico": {
+    "coherencia_media": {
+      "estado": "exploratorio",
+      "mejora_pct": null,
+      "valor_s1": 0.3547622765150753,
+      "valor_nisar": 0.5153952344668692,
+      "definicion_retirada": "100*(NISAR-S1)/S1  (mayor es mejor)",
+      "nota": "Cifras medidas el 2026-11-04 sobre épocas distintas (S1 2022-01-06–2024-09-16, 8 pares; NISAR 2025-10-30–2025-11-23, 1 par). No se han recalculado. El porcentaje de mejora se retira: no es evaluable."
+    },
+    "fraccion_usable": {
+      "estado": "exploratorio",
+      "mejora_pct": null,
+      "valor_s1": 0.5095427059712774,
+      "valor_nisar": 0.9206827309236948,
+      "definicion_retirada": "100*(NISAR-S1)/S1  (mayor es mejor)",
+      "nota": "Cifras medidas el 2026-11-04 sobre épocas distintas (S1 2022-01-06–2024-09-16, 8 pares; NISAR 2025-10-30–2025-11-23, 1 par). No se han recalculado. El porcentaje de mejora se retira: no es evaluable."
+    },
+    "ruido_std_mm_zona_estable": {
+      "estado": "exploratorio",
+      "mejora_pct": null,
+      "valor_s1": 4.725515168095703,
+      "valor_nisar": 3.5390323153366334,
+      "definicion_retirada": "100*(S1-NISAR)/S1  (menor es mejor)",
+      "nota": "Cifras medidas el 2026-11-04 sobre épocas distintas (S1 2022-01-06–2024-09-16, 8 pares; NISAR 2025-10-30–2025-11-23, 1 par). No se han recalculado. El porcentaje de mejora se retira: no es evaluable."
+    }
+  }
+}

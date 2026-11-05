@@ -1,0 +1,42 @@
+{
+  "updated": "2026-11-05T22:05:30.042605+01:00",
+  "n": 6,
+  "zips": [
+    {
+      "filename": "S1CC_20251204T063439_20251216T063438_VVP012_INT80_G_weF_C9F5.zip",
+      "bytes": 246855710,
+      "zip_crc_ok": true,
+      "sha256": "53cb004f4906d5f8f7731cac64a33b8366a1d3898c29da4080d5ca0a7074cae6"
+    },
+    {
+      "filename": "S1CC_20251029T063440_20251122T063439_VVP024_INT80_G_weF_B181.zip",
+      "bytes": 246177790,
+      "zip_crc_ok": true,
+      "sha256": "03de026e03f38a0610962584be18dc45551bba50761b171a46a9f8d0ce0e02d4"
+    },
+    {
+      "filename": "S1AA_20251122T182644_20251204T182643_VVP012_INT80_G_weF_4D20.zip",
+      "bytes": 251296136,
+      "zip_crc_ok": true,
+      "sha256": "e02aaf79b830792a0c273d5b677cc3bee659d0b30189be82021fd2e332dc3060"
+    },
+    {
+      "filename": "S1AA_20251029T182645_20251122T182644_VVP024_INT80_G_weF_DCB0.zip",
+      "bytes": 253002435,
+      "zip_crc_ok": true,
+      "sha256": "0f85d43ade87dad116648d247dbed1e1d857ad3f90e23cefcc99e02247160266"
+    },
+    {
+      "filename": "S1DD_20261020T062623_20261101T062623_VVR012_INT80_G_weF_BA12.zip",
+      "bytes": 321934713,
+      "zip_crc_ok": true,
+      "sha256": "63e67355772148cd983255d68b42bbf1d84bfcec25e652454a0e61b7161aa3fc"
+    },
+    {
+      "filename": "S1AA_20251204T182643_20251216T182642_VVP012_INT80_G_weF_6F69.zip",
+      "bytes": 252617032,
+      "zip_crc_ok": true,
+      "sha256": "6a072c97e158ab8398b35caf012208b5ce28c266e856a0d7ea3122aa382d4616"
+    }
+  ]
+}

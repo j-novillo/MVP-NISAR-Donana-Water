@@ -1,0 +1,30 @@
+name: poc-donana
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.11
+  - numpy
+  - pandas
+  - pyarrow
+  - geopandas
+  - rasterio
+  - rioxarray
+  - xarray
+  - h5py
+  - pyyaml
+  - pyproj
+  - shapely
+  - folium
+  - streamlit
+  - streamlit-folium
+  - matplotlib
+  - pillow
+  - requests
+  - pytest
+  - pip
+  - pip:
+      # Cliente del catálogo de la NASA ASF (NISAR GUNW y Sentinel-1).
+      - asf_search>=8.0
+# MintPy (opción B, SBAS) no entra en el entorno mínimo: su instalación arrastra
+# dependencias pesadas y la PoC de la opción A no lo importa. Ver docs/08-opcion-b-mintpy.md
+# y environment-opcion-b.yml.
