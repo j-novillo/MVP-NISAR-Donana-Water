@@ -24,7 +24,8 @@ procesado:
   signo_fase: -1.0
   plataforma: SENTINEL-1
   min_ecuaciones_red: 6
-  longitud_onda_nisar_m: 0.238403
+  # c / 1.229e9, centerFrequency de los dos GUNW observados. El lector usa el dataset si está.
+  longitud_onda_nisar_m: 0.24393202441008952
 medicion:
   malla_m: 80
   anillo_min_m: 400

@@ -32,6 +32,9 @@ ARIA, es la del propio fichero (~0,0555 m).
 Este signo no es una ley. Hay productos que definen la fase al revés. Antes
 de creerse un mapa real hay que mirar un punto que se sepa estable o un
 hundimiento conocido y, si hace falta, cambiar `procesado.signo_fase`.
+El valor −1 no está anclado en los GUNW reales. Su `centerFrequency` es
+1,229 GHz (λ = 0,2439320244 m) y declaran EPSG:32630; el huso 29 de Rociana
+no sustituye a ese CRS. NISAR mira a la izquierda y Sentinel-1 a la derecha.
 
 ## Coherencia
 

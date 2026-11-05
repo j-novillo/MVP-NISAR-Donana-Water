@@ -16,7 +16,7 @@ Fecha: 2026-11-04 (Europe/Madrid). Rama `cursor/poc-donana-insar-8c15`.
 | GNSS catálogo NGL | **11 estaciones** cercanas | `docs/datos-referencia/estaciones_gnss_cercanas.csv` |
 | GNSS series (tenv3) | **404** en NGL | Usar RINEX RAP/IGN |
 | ARIA S1 GUNW 2025-10+ | **0** productos | No hay ifg S1 listos en el solape NISAR |
-| HyP3 jobs 2025-10+ | pendiente de usuario/clave Earthdata | El token Bearer no autentica HyP3 |
+| HyP3 jobs | seis en curso en el box, no se lanzan desde aquí | `HyP3(token=EARTHDATA_TOKEN)` autentica; no hace falta usuario/clave |
 
 ## Comparación NISAR vs Sentinel-1
 

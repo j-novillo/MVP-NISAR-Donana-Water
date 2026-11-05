@@ -79,19 +79,22 @@ python src/descarga_asf.py --listar
 # Recorta el CSV a los gránulos que quieras (p. ej. 2–4 para la PoC)
 # y deja scene_name,url en data/raw/nisar_subset.csv
 export EARTHDATA_TOKEN=...   # o carga .env
-python src/descarga_nisar_chunked.py
+python src/descarga_nisar_chunked.py --csv data/raw/nisar_subset.csv --destino data/raw/interferogramas
 ```
 
 - **Destino**: `data/raw/interferogramas/*.h5`
 - **Sidecar** (λ banda L): al lado de cada `.h5` un JSON con
-  `plataforma: NISAR`, `longitud_onda_m: 0.238403`, fechas. El comparador
+  `plataforma: NISAR`, `frecuencia_hz: 1229000000` o `longitud_onda_m: 0.24393202441008952`,
+  `look_direction: Left`, `orbita: Ascending`. No uses 0,238403 m: no es la λ de estos GUNW.
+  El comparador
   también detecta NISAR por el nombre del fichero.
 
 ### 3.2 Sentinel-1 (HyP3 INSAR_GAMMA)
 
 - **Qué**: zips `S1AA_*_INT80_*.zip` (fase desenvuelta + coherencia).
-- **Dónde**: https://hyp3.asf.alaska.edu/ o SDK `hyp3_sdk` con usuario/clave
-  Earthdata (el token Bearer **no** autentica HyP3).
+- **Dónde**: https://hyp3.asf.alaska.edu/ o `hyp3_sdk.HyP3(token=EARTHDATA_TOKEN)`.
+  El token Earthdata que ya existe autentica. No hace falta usuario ni contraseña.
+  No lances jobs desde el agente cloud: en el box ya hay seis en curso.
 - **Destino de los zip**: `data/raw/hyp3_s1/`
 - **Conversión a GeoTIFF de 2 bandas** (lo que lee el pipeline):
 
@@ -230,10 +233,10 @@ un porcentaje único que resuma la comparación.
 | Síntoma | Qué mirar |
 |---|---|
 | `IncompleteRead` / descarga NISAR a medias | `src/descarga_nisar_chunked.py` (rangos 1 MiB) |
-| HyP3 AuthenticationError | hace falta usuario/clave Earthdata, no solo el token |
+| HyP3 AuthenticationError | `HyP3(token=EARTHDATA_TOKEN)` usa el token Earthdata que ya tienes. No hace falta usuario ni contraseña |
 | CDSE 401 | renueva con usuario/clave; el JWT suelto caduca en minutos |
 | EGMS 401 | falta login CLMS |
 | Comparador `no_evaluable` | falta solape de pares, CRS leído, signo anclado o GNSS en LOS. No se rellena con un % |
-| CRS del GUNW | hay que leer el EPSG del producto. Rociana está en el huso 29. No asumir 32630 ni 25829 si el fichero no lo trae |
+| CRS del GUNW | los dos productos observados declaran EPSG:32630. Se lee y se reproyecta. Que Rociana esté en el huso 29 no invalida ese CRS |
 
 Más detalle de diseño: `docs/01`…`docs/10` y `docs/resultados-datos-reales.md`.

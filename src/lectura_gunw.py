@@ -63,6 +63,24 @@ class Interferograma:
     transform: Affine
     crs: str
     crs_leido: bool = True
+    frecuencia_hz: float | None = None
+    onda_leida: bool = False
+    look_direction: str | None = None
+    orbita: str | None = None
+    incidencia_aprox_deg: float | None = None
+    fase_unidades: str | None = None
+
+
+# Velocidad de la luz en el vacío (m/s), definición SI.
+C_LUZ_M_S = 299_792_458.0
+
+
+def longitud_onda_desde_frecuencia(frecuencia_hz: float) -> float:
+    """λ = c / f. La de los GUNW observados (1,229 GHz) es 0,2439320244 m, no 0,238403."""
+    frecuencia = float(frecuencia_hz)
+    if frecuencia <= 0:
+        raise ValueError("la frecuencia central tiene que ser positiva")
+    return C_LUZ_M_S / frecuencia
 
 
 def desplazamiento_mm(fase_rad: np.ndarray, longitud_onda_m: float, signo: float) -> np.ndarray:
@@ -203,11 +221,59 @@ def leer_hdf5(ruta: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray | None, Af
         ds_cc = _buscar_dataset(handle, RUTAS_COMPONENTES, "connectedComponents")
         componentes = np.asarray(ds_cc[...]) if ds_cc is not None else None
         transform, crs, crs_leido = _georreferencia_hdf5(handle, fase.shape)
+        radar = _radar_hdf5(handle, ds_fase)
     fase = _a_2d(fase)
     coherencia = _a_2d(coherencia)
     if componentes is not None:
         componentes = _a_2d(componentes)
-    return fase, coherencia, componentes, transform, crs, crs_leido
+    return fase, coherencia, componentes, transform, crs, crs_leido, radar
+
+
+def _texto_attr(valor) -> str | None:
+    if valor is None:
+        return None
+    if isinstance(valor, bytes):
+        return valor.decode()
+    if isinstance(valor, np.ndarray):
+        if valor.shape == ():
+            return _texto_attr(valor.item())
+        if valor.size == 1:
+            return _texto_attr(valor.reshape(-1)[0])
+    return str(valor)
+
+
+def _radar_hdf5(handle, ds_fase) -> dict:
+    """Frecuencia, mirada y órbita declaradas por el producto. No inventa λ."""
+    info = {
+        "frecuencia_hz": None,
+        "onda_leida": False,
+        "look_direction": None,
+        "orbita": None,
+        "fase_unidades": None,
+    }
+    for clave in (
+        "science/LSAR/GUNW/grids/frequencyA/centerFrequency",
+        "science/LSAR/GUNW/grids/frequencyA/center_frequency",
+    ):
+        if clave in handle:
+            try:
+                info["frecuencia_hz"] = float(np.asarray(handle[clave][()]).reshape(-1)[0])
+                info["onda_leida"] = True
+            except (TypeError, ValueError, IndexError):
+                pass
+            break
+    for clave, campo in (
+        ("science/LSAR/identification/lookDirection", "look_direction"),
+        ("science/LSAR/identification/orbitPassDirection", "orbita"),
+    ):
+        if clave in handle:
+            try:
+                info[campo] = _texto_attr(handle[clave][()])
+            except Exception:
+                info[campo] = _texto_attr(handle[clave].attrs.get("value"))
+    if ds_fase is not None and "units" in ds_fase.attrs:
+        info["fase_unidades"] = _texto_attr(ds_fase.attrs["units"])
+    return info
 
 
 def _a_2d(arr: np.ndarray) -> np.ndarray:
@@ -301,12 +367,34 @@ def cargar_interferograma(ruta: Path, longitud_onda_defecto: float) -> Interfero
     sufijo = ruta.suffix.lower()
     componentes = None
     crs_leido = True
+    radar = {
+        "frecuencia_hz": None,
+        "onda_leida": False,
+        "look_direction": None,
+        "orbita": None,
+        "fase_unidades": None,
+    }
     if sufijo in {".tif", ".tiff"}:
         fase, coherencia, transform, crs = leer_geotiff(ruta)
     elif sufijo in {".h5", ".hdf5"}:
-        fase, coherencia, componentes, transform, crs, crs_leido = leer_hdf5(ruta)
+        fase, coherencia, componentes, transform, crs, crs_leido, radar = leer_hdf5(ruta)
     else:
         raise ValueError(f"Extensión no soportada: {ruta}")
+    lado = _leer_sidecar(ruta)
+    if lado.get("frecuencia_hz") and not radar["onda_leida"]:
+        radar["frecuencia_hz"] = float(lado["frecuencia_hz"])
+        radar["onda_leida"] = True
+    if lado.get("look_direction"):
+        radar["look_direction"] = str(lado["look_direction"])
+    if lado.get("orbita"):
+        radar["orbita"] = str(lado["orbita"])
+    if lado.get("fase_unidades"):
+        radar["fase_unidades"] = str(lado["fase_unidades"])
+    if radar["onda_leida"] and radar["frecuencia_hz"]:
+        onda = longitud_onda_desde_frecuencia(radar["frecuencia_hz"])
+    elif "longitud_onda_m" in lado:
+        onda = float(lado["longitud_onda_m"])
+        radar["onda_leida"] = True
     if fase.shape != coherencia.shape:
         raise ValueError(f"Fase y coherencia no coinciden en {ruta.name}")
     return Interferograma(
@@ -321,6 +409,11 @@ def cargar_interferograma(ruta: Path, longitud_onda_defecto: float) -> Interfero
         transform=transform,
         crs=crs,
         crs_leido=crs_leido,
+        frecuencia_hz=radar["frecuencia_hz"],
+        onda_leida=bool(radar["onda_leida"]),
+        look_direction=radar["look_direction"],
+        orbita=radar["orbita"],
+        fase_unidades=radar["fase_unidades"],
     )
 
 

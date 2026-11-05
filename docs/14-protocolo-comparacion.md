@@ -51,21 +51,32 @@ distintas, esa demostración no existe.
 | Piezómetro | Nivel de agua, no desplazamiento | No |
 | EGMS L2/L3 | Movimiento desde Sentinel-1 | No como verdad independiente de S1 |
 
-## Primer GUNW ya citado
+## GUNW observados
 
-Nombre en los docs del 4 nov 2026:
-`NISAR_L2_PR_GUNW_004_015_A_021_006_2000_SH_20251030T053143_…_20251123T053219_…`.
-Las fechas del nombre van del 2025-10-30 al 2025-11-23 (24 días). La guía
-ASF describe GUNW de vecinos a 12 días y fase desenvuelta en radianes, en
-una rejilla de unos 80 m, en UTM o estereográfica polar. La conversión del
-repo es `d_mm = signo * (λ / 4π) * fase * 1000`, con λ ≈ 0,238403 m. El
-signo −1 no está comprobado contra un control.
+Los dos HDF5 completos declaran EPSG:32630, fase en radians y
+`centerFrequency` 1,229 GHz, así que λ = c / f = 0,2439320244 m. No se usa
+0,238403 m. Ambos son Ascending y Left. La incidencia aproximada en el punto
+de referencia, a cota 0, es 45,71° y 45,72°; el array de incidencia es una
+rejilla, no ese número. El par del 30 oct al 23 nov 2025 dura 24 días; el del
+5 al 17 dic 2025 dura 12. El signo −1 de la configuración sigue sin anclar.
 
-Rociana (−6,58°) cae en el huso UTM 29. La guía local mencionó EPSG:32630
-para ese producto. Aquí no está el HDF5: no se reafirma el EPSG. Si el
-fichero no trae proyección, el lector deja EPSG:25829 y `crs_leido=False`,
-y la comparación queda `no_evaluable`. Releer el dataset `projection` en el
-box antes de citar huso.
+Que Rociana esté en el huso 29 no invalida el 32630. Se lee el CRS declarado
+y se reproyecta. `crs_leido` queda en false solo si el fichero no trae EPSG.
+
+Sentinel-1 IW mira a la derecha. Un ascendente S1 y un ascendente NISAR no
+comparten la línea de visión. No se comparan desplazamientos como la misma
+dirección sin proyectarlos con la incidencia y el azimut de cada geometría.
+Las coherencias nativas se listan por producto en
+`docs/datos-referencia/nisar_gunw_observado.json`, con `is_accuracy: false`.
+No se convierten en un porcentaje frente a S1.
+
+Hay seis jobs HyP3 en curso en el box: tres ascendentes de octubre–diciembre
+de 2025, dos descendentes que se quieren comparar, y uno descendente del
+20 oct al 1 nov de 2026. Ese último intervalo no corta los dos GUNW de 2025.
+Aunque un ascendente S1 coincida en fechas, la mirada derecha frente a la
+izquierda deja el desplazamiento `no_evaluable` hasta la proyección. No se
+envían más jobs desde aquí. `HyP3(token=...)` usa el token Earthdata; no
+hace falta usuario ni contraseña. EGMS sigue bloqueado por el login CLMS.
 
 ## Legal
 

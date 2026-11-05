@@ -1,5 +1,11 @@
 """Prepara jobs HyP3 INSAR_GAMMA oficiales. No los envía.
 
+`hyp3_sdk.HyP3(token=EARTHDATA_TOKEN)` autentica con el token Earthdata
+que ya existe. No hace falta EARTHDATA_USERNAME ni EARTHDATA_PASSWORD.
+
+Este archivo no llama a HyP3 al importarse. `--enviar` hace el POST y no
+debe usarse desde el agente cloud: hay jobs ya en curso en el box.
+
 El cuerpo sigue la API pública:
 https://hyp3-docs.asf.alaska.edu/using/api/
 POST https://hyp3-api.asf.alaska.edu/jobs

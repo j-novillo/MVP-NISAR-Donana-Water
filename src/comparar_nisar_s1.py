@@ -42,6 +42,8 @@ from comparacion_protocolo import (
     papel_referencia,
     solape_de_pares,
     checklist_comparabilidad,
+    lado_mira_s1,
+    los_directamente_comparable,
 )
 from lectura_gunw import (
     cargar_interferograma,
@@ -60,7 +62,6 @@ from utilidades import (
 log = logging.getLogger("poc.comparar")
 
 ONDA_S1 = 0.05546576
-ONDA_NISAR = 0.238403
 
 
 @dataclass
@@ -79,6 +80,9 @@ class MetricasProducto:
     intervalos: list | None = None
     crs_leidos: list | None = None
     dispersion_espacial_urbana_mm: float | None = None
+    looks: list | None = None
+    orbitas: list | None = None
+    ondas_leidas: list | None = None
 
 
 def _es_nisar(ruta: Path) -> bool:
@@ -90,12 +94,13 @@ def _es_s1(ruta: Path) -> bool:
     return n.startswith("S1") or "SENTINEL" in n or "HYP3" in n
 
 
-def _onda(ruta: Path, cfg_onda: float) -> float:
-    if _es_nisar(ruta):
-        return ONDA_NISAR
-    if _es_s1(ruta):
-        return ONDA_S1
-    return cfg_onda
+def _onda_producto(ifg, etiqueta: str, cfg_onda: float) -> tuple[float, bool]:
+    """La λ del fichero manda. 0,238403 m no se fuerza si hay centerFrequency."""
+    if getattr(ifg, "onda_leida", False) and ifg.longitud_onda_m > 0:
+        return float(ifg.longitud_onda_m), True
+    if etiqueta == "SENTINEL-1":
+        return ONDA_S1, False
+    return float(cfg_onda), False
 
 
 def _clip_aoi(fase, coh, transform, crs, aoi, resolucion_m: float = 80.0):
@@ -171,17 +176,23 @@ def _metricas_lista(
     fechas = []
     intervalos = []
     crs_leidos = []
+    looks = []
+    orbitas = []
+    ondas_ok = []
     n_pix = 0
     n_est = 0
 
     for ruta in rutas:
         try:
-            ifg = cargar_interferograma(ruta, _onda(ruta, float(cfg["procesado"]["longitud_onda_m"])))
+            ifg = cargar_interferograma(ruta, float(cfg["procesado"].get("longitud_onda_nisar_m", cfg["procesado"]["longitud_onda_m"])))
         except Exception as exc:
             notas.append(f"{ruta.name}: {exc.__class__.__name__}: {exc}")
             continue
-        # Asegura onda correcta aunque el sidecar falte
-        onda = _onda(ruta, ifg.longitud_onda_m)
+        onda, onda_ok = _onda_producto(ifg, etiqueta, float(cfg["procesado"].get("longitud_onda_nisar_m", cfg["procesado"]["longitud_onda_m"])))
+        if not onda_ok:
+            notas.append(f"{ruta.name}: longitud de onda no leída del producto")
+        if ifg.fase_unidades and "radian" not in ifg.fase_unidades.lower():
+            notas.append(f"{ruta.name}: la fase no está declarada en radianes ({ifg.fase_unidades})")
         fase, coh, transform = ifg.fase_rad, ifg.coherencia, ifg.transform
         fase_c, coh_c, transform_c = _clip_aoi(fase, coh, transform, ifg.crs, aoi)
         finito = np.isfinite(coh_c)
@@ -202,6 +213,12 @@ def _metricas_lista(
         fechas.append(ifg.fecha_secundaria)
         intervalos.append([ifg.fecha_referencia.isoformat(), ifg.fecha_secundaria.isoformat()])
         crs_leidos.append(bool(getattr(ifg, "crs_leido", False)))
+        look = ifg.look_direction
+        if etiqueta == "SENTINEL-1":
+            look, _fuente = lado_mira_s1(look)
+        looks.append(look)
+        orbitas.append(ifg.orbita)
+        ondas_ok.append(onda_ok)
 
     if not cohs:
         return MetricasProducto(
@@ -238,6 +255,9 @@ def _metricas_lista(
         intervalos=intervalos,
         crs_leidos=crs_leidos,
         dispersion_espacial_urbana_mm=float(np.nanmean(ruidos)) if ruidos else None,
+        looks=looks,
+        orbitas=orbitas,
+        ondas_leidas=ondas_ok,
     )
 
 
@@ -290,6 +310,14 @@ def _solape(a: MetricasProducto, b: MetricasProducto) -> dict:
             "ningún par se cruza"
         )
     return resultado
+
+
+def _nativo_observado() -> dict | None:
+    """Cifras nativas ya medidas, sin remuestreo. No son una mejora."""
+    ruta = Path(__file__).resolve().parents[1] / "docs" / "datos-referencia" / "nisar_gunw_observado.json"
+    if not ruta.is_file():
+        return None
+    return json.loads(ruta.read_text(encoding="utf-8"))
 
 
 def _buscar_verdad_terreno(cfg: dict) -> dict:
@@ -363,6 +391,28 @@ def exactitud_no_calculable(solape: dict, verdad: dict, checklist: dict) -> dict
     }
 
 
+def _unico(valores) -> str | None:
+    limpios = []
+    for valor in valores or []:
+        if valor and valor not in limpios:
+            limpios.append(valor)
+    if len(limpios) == 1:
+        return limpios[0]
+    return None
+
+
+def _los_entre(s1: MetricasProducto, nisar: MetricasProducto) -> dict:
+    look_s1 = _unico(s1.looks)
+    if look_s1 is None:
+        look_s1, _fuente = lado_mira_s1(None)
+    return los_directamente_comparable(
+        _unico(nisar.looks),
+        _unico(nisar.orbitas),
+        look_s1,
+        _unico(s1.orbitas),
+    )
+
+
 def comparar(cfg: dict) -> dict:
     aoi = resolver_aoi(cfg)
     umbral = float(cfg["procesado"]["coherencia_min"])
@@ -378,6 +428,7 @@ def comparar(cfg: dict) -> dict:
     solape = _solape(m_s1, m_nisar)
     verdad = _buscar_verdad_terreno(cfg)
     signo_anclado = bool(cfg.get("comparacion", {}).get("signo_fase_anclado", False))
+    los = _los_entre(m_s1, m_nisar)
     checklist = checklist_comparabilidad(
         hay_solape=bool(solape.get("hay_solape")),
         misma_zona=True,
@@ -386,6 +437,7 @@ def comparar(cfg: dict) -> dict:
         referencia_comun=True,
         unidades_los_mm=True,
         los_incidencia_registrada=False,
+        los_misma_direccion_o_proyeccion=bool(los["comparable"]),
         estacion_o_intervalo_comun=bool(solape.get("hay_solape")),
         n_s1=m_s1.n_interferogramas,
         n_nisar=m_nisar.n_interferogramas,
@@ -431,7 +483,9 @@ def comparar(cfg: dict) -> dict:
         },
         "mejora_exactitud_vs_verdad": exactitud,
         "verdad_terreno_disponible": verdad,
+        "geometria_los": los,
         "primer_gunw_documentado": nota_primer_gunw(),
+        "nisar_nativo_observado": _nativo_observado(),
         "advertencias": [
             ADVERTENCIA_LEGAL,
             ADVERTENCIA_DISPERSION,
@@ -440,6 +494,7 @@ def comparar(cfg: dict) -> dict:
             ADVERTENCIA_GNSS,
             "NISAR es banda L (λ≈0,24 m); Sentinel-1 es banda C (λ≈0,055 m). No se invierten juntas.",
             "No hay un porcentaje único de mejora.",
+            los.get("motivo") or "geometría LOS registrada",
         ],
     }
     return resumen

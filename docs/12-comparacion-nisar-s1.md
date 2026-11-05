@@ -13,6 +13,15 @@ Los valores medidos entonces siguen en `docs/comparacion-nisar-s1.json`,
 bajo `exploratorio_historico`, con `mejora_pct` en null. No se han
 recalculado: en este entorno no están los interferogramas.
 
+Los dos GUNW completos, leídos por sus metadatos, declaran EPSG:32630,
+fase en radianes y 1,229 GHz (λ = 0,2439320244 m, no 0,238403 m). Son
+Ascending/Left, con incidencia aproximada 45,7°. Sentinel-1 mira a la
+derecha: aunque un job ascendente coincida en fechas, el desplazamiento no
+es la misma dirección. Las coherencias nativas de cada par están en
+`docs/datos-referencia/nisar_gunw_observado.json` y no se convierten en un
+porcentaje. El signo −1 sigue sin anclar. El huso 29 de Rociana no invalida
+el 32630: se reproyecta.
+
 ## Qué falta para que una mejora sea evaluable
 
 La única fórmula admitida es `100 * (err_S1 − err_NISAR) / err_S1`, y solo

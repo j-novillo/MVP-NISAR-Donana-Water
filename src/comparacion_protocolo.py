@@ -34,6 +34,7 @@ REQUISITOS = (
     "referencia_comun",
     "unidades_los_mm",
     "los_incidencia_registrada",
+    "los_misma_direccion_o_proyeccion",
     "estacion_o_intervalo_comun",
     "n_suficiente",
     "incertidumbre_reportada",
@@ -180,6 +181,7 @@ def checklist_comparabilidad(
     referencia_comun: bool,
     unidades_los_mm: bool,
     los_incidencia_registrada: bool,
+    los_misma_direccion_o_proyeccion: bool,
     estacion_o_intervalo_comun: bool,
     n_s1: int,
     n_nisar: int,
@@ -198,6 +200,7 @@ def checklist_comparabilidad(
         "referencia_comun": bool(referencia_comun),
         "unidades_los_mm": bool(unidades_los_mm),
         "los_incidencia_registrada": bool(los_incidencia_registrada),
+        "los_misma_direccion_o_proyeccion": bool(los_misma_direccion_o_proyeccion),
         "estacion_o_intervalo_comun": bool(estacion_o_intervalo_comun),
         "n_suficiente": n_s1 >= n_minimo and n_nisar >= n_minimo,
         "incertidumbre_reportada": bool(incertidumbre_reportada),
@@ -320,38 +323,111 @@ def papel_referencia(nombre: str) -> dict:
     return papeles[nombre]
 
 
-def nota_primer_gunw() -> dict:
-    """Hechos del primer GUNW ya citado en el repo, sin reabrir el HDF5.
+def lado_mira_s1(look_leido: str | None) -> tuple[str, str]:
+    """Sentinel-1 IW mira a la derecha por diseño de la misión.
 
-    Este entorno no tiene el fichero. No se afirma el EPSG ni el signo.
+    Si el producto trae el lado, manda el producto. Si no, se anota como
+    hecho de misión, no como un campo leído del fichero.
     """
+    if look_leido:
+        return look_leido, "producto"
+    return "Right", "mision"
+
+
+def los_directamente_comparable(
+    look_a: str | None,
+    pasa_a: str | None,
+    look_b: str | None,
+    pasa_b: str | None,
+    proyeccion_comun: bool = False,
+) -> dict:
+    """Ascendente con ascendente no es la misma LOS si un sensor mira a la izquierda y el otro a la derecha.
+
+    NISAR, en los dos GUNW observados, es Ascending/Left. Sentinel-1 IW es right-looking.
+    Sin una proyección a un marco común (vertical o ENU) con incidencia y azimut
+    de cada geometría, los desplazamientos no se comparan.
+    """
+    if proyeccion_comun:
+        return {
+            "comparable": True,
+            "motivo": "hay una proyección explícita a un marco común",
+        }
+    if not look_a or not look_b or not pasa_a or not pasa_b:
+        return {
+            "comparable": False,
+            "motivo": "falta lookDirection u orbitPassDirection en alguno de los dos sensores",
+        }
+    if look_a.lower() == look_b.lower() and pasa_a.lower() == pasa_b.lower():
+        return {"comparable": True, "motivo": "mismo sentido de órbita y mismo lado de mira"}
     return {
-        "nombre_citado": (
-            "NISAR_L2_PR_GUNW_004_015_A_021_006_2000_SH_"
-            "20251030T053143_20251030T053218_"
-            "20251123T053144_20251123T053219_X05010_N_F_J_001"
+        "comparable": False,
+        "motivo": (
+            f"{pasa_a}/{look_a} y {pasa_b}/{look_b} no comparten la línea de visión. "
+            "No se comparan desplazamientos como si fueran la misma dirección."
         ),
-        "fechas_en_el_nombre": ["2025-10-30", "2025-11-23"],
-        "separacion_dias": 24,
+    }
+
+
+def crs_declarado_no_se_invalida_por_huso_de_trabajo(epsg_producto: int | None, leido: bool) -> bool:
+    """Un GUNW en EPSG:32630 es utilizable aunque el AOI caiga en el huso 29.
+
+    Se lee el CRS declarado y se reproyecta. Solo es inválido si el fichero
+    no trae EPSG.
+    """
+    return bool(leido and epsg_producto and int(epsg_producto) > 0)
+
+
+def nota_primer_gunw() -> dict:
+    """Metadatos observados de los dos GUNW completos. El signo no se reafirma."""
+    return {
+        "productos": [
+            {
+                "nombre": (
+                    "NISAR_L2_PR_GUNW_004_015_A_021_006_2000_SH_"
+                    "20251030T053143_20251030T053218_"
+                    "20251123T053144_20251123T053219_X05010_N_F_J_001"
+                ),
+                "fechas": ["2025-10-30", "2025-11-23"],
+                "separacion_dias": 24,
+            },
+            {
+                "nombre": (
+                    "NISAR_L2_PR_GUNW_007_015_A_021_008_2000_SH_"
+                    "20251205T053144_20251205T053219_"
+                    "20251217T053145_20251217T053220_X05010_N_F_J_001"
+                ),
+                "fechas": ["2025-12-05", "2025-12-17"],
+                "separacion_dias": 12,
+            },
+        ],
         "fase": (
-            "La guía de usuario de NISAR describe unwrappedPhase en radianes. "
-            "La conversión usada en el repo es d_mm = signo * (λ / 4π) * fase * 1000, "
-            "con λ L-banda ≈ 0,238403 m. El signo por defecto (−1) no está anclado "
-            "a un punto de control, así que los milímetros LOS no son comparables "
-            "con GNSS hasta esa comprobación. La desviación típica no cambia si "
-            "se invierte el signo global, pero eso no la convierte en ruido instrumental."
+            "El atributo units de unwrappedPhase en los dos ficheros es radians. "
+            "La conversión es d_mm = signo * (λ / 4π) * fase * 1000, con λ = c / 1,229e9 "
+            "= 0,2439320244 m. El signo −1 de la configuración sigue sin anclar."
         ),
         "crs": (
-            "Rociana (−6,58°) está en el huso UTM 29. Un GUNW puede venir en otro "
-            "huso (la guía local mencionó EPSG:32630). Solo vale si el código EPSG "
-            "se lee del producto. El fallback EPSG:25829, cuando el fichero no trae "
-            "proyección, deja la georreferencia sin verificar y la comparación "
-            "queda no_evaluable. Este entorno no tiene el HDF5 para releerlo."
+            "Los dos HDF5 observados declaran EPSG:32630. Rociana (−6,58°) cae en "
+            "el huso 29, y eso no invalida el producto: se lee 32630 y se reproyecta "
+            "al CRS de trabajo. El fallback EPSG:25829 solo aparece si el fichero "
+            "no trae proyección; en ese caso crs_leido queda en false."
         ),
-        "posting": "La guía ASF fija la fase desenvuelta del GUNW en una rejilla de unos 80 m.",
+        "mirada": (
+            "Ambos productos declaran Ascending y Left. Sentinel-1 IW mira a la "
+            "derecha. Ascendente con ascendente no es la misma línea de visión."
+        ),
+        "incidencia_aprox_deg": (
+            "Aproximación en el punto de referencia, cota 0: 45,72° (30 oct) y "
+            "45,71° (5 dic). El dataset incidenceAngle es una rejilla, no ese escalar."
+        ),
+        "longitud_onda_m": 0.24393202441008952,
+        "frecuencia_hz": 1_229_000_000.0,
+        "fase_unidades": "radians",
+        "posting_m": 80,
         "baseline": (
-            "La misión documenta GUNW de vecinos a 12 días. El nombre de este "
-            "primer producto abarca 24 días. No se trata como un par de 12 días."
+            "30 oct–23 nov 2025 son 24 días; 5–17 dic 2025 son 12 días. "
+            "No se tratan los dos como el vecino nominal de 12 días."
         ),
+        "signo_fase": "el valor −1 de la config sigue sin anclar; no se reafirma",
         "estado_frente_a_s1_2022_2024": ESTADO_NO,
+        "calidad_nativa": "docs/datos-referencia/nisar_gunw_observado.json",
     }

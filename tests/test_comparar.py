@@ -6,14 +6,17 @@ import numpy as np
 
 from comparacion_protocolo import (
     checklist_comparabilidad,
+    crs_declarado_no_se_invalida_por_huso_de_trabajo,
     enu_a_los,
     exploratorio,
     intervalos_se_solapan,
+    los_directamente_comparable,
     mascara_comun,
     mejora_error,
     papel_referencia,
     solape_de_pares,
 )
+from lectura_gunw import longitud_onda_desde_frecuencia
 from comparar_nisar_s1 import MetricasProducto, _mejora, _solape
 from catalogo_s1_solape import parametros_slc
 from descarga_nisar_chunked import alinear_reanudacion
@@ -88,6 +91,7 @@ def test_checklist_falla_si_n_de_nisar_es_uno():
         referencia_comun=True,
         unidades_los_mm=True,
         los_incidencia_registrada=True,
+        los_misma_direccion_o_proyeccion=True,
         estacion_o_intervalo_comun=True,
         n_s1=8,
         n_nisar=1,
@@ -146,6 +150,24 @@ def test_consulta_egms_rechaza_un_bbox_ilegal_y_no_llama_a_la_red():
         pass
     else:
         raise AssertionError("un bbox de más de 5° debería rechazarse")
+
+
+def test_lambda_observada_no_es_el_hardcode_antiguo():
+    onda = longitud_onda_desde_frecuencia(1.229e9)
+    assert abs(onda - 0.24393202441008952) < 1e-12
+    assert abs(onda - 0.238403) > 0.001
+
+
+def test_left_y_right_no_son_la_misma_los_aunque_ambos_asciendan():
+    out = los_directamente_comparable("Left", "Ascending", "Right", "Ascending")
+    assert out["comparable"] is False
+    mismo = los_directamente_comparable("Right", "Ascending", "Right", "Ascending")
+    assert mismo["comparable"] is True
+
+
+def test_epsg_32630_no_se_invalida_por_el_huso_29():
+    assert crs_declarado_no_se_invalida_por_huso_de_trabajo(32630, True) is True
+    assert crs_declarado_no_se_invalida_por_huso_de_trabajo(32630, False) is False
 
 
 def test_reanudacion_nisar_no_se_pasa_del_total():

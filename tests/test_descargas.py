@@ -127,6 +127,33 @@ def test_lectura_de_gunw_hdf5(tmp_path: Path):
     assert producto.plataforma == "DESCONOCIDA"
     # El eje Y decrece: el píxel (0, 0) es el más al norte.
     assert producto.transform.e < 0
+    assert producto.crs_leido is False
+    assert producto.onda_leida is False
+
+
+def test_gunw_observado_lee_epsg_frecuencia_y_mirada(tmp_path: Path):
+    ruta = tmp_path / "NISAR_GUNW_20251030T053143_20251030T053218_20251123T053144_20251123T053219.h5"
+    fase = np.full((4, 5), 0.2, dtype=np.float32)
+    coh = np.full((4, 5), 0.8, dtype=np.float32)
+    with h5py.File(ruta, "w") as handle:
+        base = "science/LSAR/GUNW/grids/frequencyA"
+        fase_ds = handle.create_dataset(f"{base}/unwrappedInterferogram/HH/unwrappedPhase", data=fase)
+        fase_ds.attrs["units"] = "radians"
+        handle.create_dataset(f"{base}/unwrappedInterferogram/HH/coherenceMagnitude", data=coh)
+        handle.create_dataset(f"{base}/xCoordinates", data=np.arange(5) * 80.0)
+        handle.create_dataset(f"{base}/yCoordinates", data=4_200_000.0 - np.arange(4) * 80.0)
+        handle.create_dataset(f"{base}/projection", data=np.int32(32630))
+        handle.create_dataset(f"{base}/centerFrequency", data=np.float64(1.229e9))
+        handle.create_dataset("science/LSAR/identification/lookDirection", data="Left")
+        handle.create_dataset("science/LSAR/identification/orbitPassDirection", data="Ascending")
+    producto = cargar_interferograma(ruta, 0.238403)
+    assert producto.crs == "EPSG:32630"
+    assert producto.crs_leido is True
+    assert producto.onda_leida is True
+    assert producto.longitud_onda_m == pytest.approx(0.24393202441008952)
+    assert producto.look_direction == "Left"
+    assert producto.orbita == "Ascending"
+    assert producto.fase_unidades == "radians"
 
 
 def test_el_sidecar_manda_sobre_el_nombre(tmp_path: Path):

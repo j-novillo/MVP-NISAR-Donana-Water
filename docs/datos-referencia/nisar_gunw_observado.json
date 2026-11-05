@@ -1,0 +1,42 @@
+{
+  "fuente": "metadatos HDF5 observados, sin el raster",
+  "is_accuracy": false,
+  "fase_unidades": "radians",
+  "frecuencia_hz": 1229000000.0,
+  "longitud_onda_m": 0.24393202441008952,
+  "epsg_declarado": 32630,
+  "look_direction": "Left",
+  "orbit_pass": "Ascending",
+  "pixel_spacing_m": 80,
+  "signo_fase_anclado": false,
+  "productos": [
+    {
+      "filename": "NISAR_L2_PR_GUNW_004_015_A_021_006_2000_SH_20251030T053143_20251030T053218_20251123T053144_20251123T053219_X05010_N_F_J_001.h5",
+      "fechas": ["2025-10-30", "2025-11-23"],
+      "separacion_dias": 24,
+      "bytes": 2344615936,
+      "shape": [4302, 4365],
+      "aoi_pixels_native": 4111,
+      "valid_pixels_native": 2950,
+      "coherence_mean_valid_native": 0.5264055132865906,
+      "usable_fraction_aoi_native": 0.6570177572366821,
+      "incidence_deg_at_reference_approx_height0": 45.71381378173828,
+      "connected_components": [1],
+      "criterio_nativo": "finite phase/coh, 0<cc<65535; usable also coh>=0.3; no resampling"
+    },
+    {
+      "filename": "NISAR_L2_PR_GUNW_007_015_A_021_008_2000_SH_20251205T053144_20251205T053219_20251217T053145_20251217T053220_X05010_N_F_J_001.h5",
+      "fechas": ["2025-12-05", "2025-12-17"],
+      "separacion_dias": 12,
+      "bytes": 2306867200,
+      "shape": [4302, 4365],
+      "aoi_pixels_native": 4111,
+      "valid_pixels_native": 4051,
+      "coherence_mean_valid_native": 0.6680607199668884,
+      "usable_fraction_aoi_native": 0.9695937728046704,
+      "incidence_deg_at_reference_approx_height0": 45.718326568603516,
+      "connected_components": [1],
+      "criterio_nativo": "finite phase/coh, 0<cc<65535; usable also coh>=0.3; no resampling"
+    }
+  ]
+}
