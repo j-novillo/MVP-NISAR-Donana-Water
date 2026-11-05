@@ -99,9 +99,11 @@ están dentro de la SAR y se quedan en torno a 5 puntos.
 
 ## Lo que el score no es
 
-No es una denuncia. No usa los pozos cerrados ni los puntos WWF: esos solo
+No es una denuncia y no identifica un pozo. La subsidencia, sola, no demuestra
+una extracción ni su ilegalidad: un cono puede ser suelo compresible, una obra
+o atmósfera residual. No usa los pozos cerrados ni los puntos WWF: esos solo
 entran en la validación. Un score alto con la capa de pozos incompleta (y el
-registro de la CHG lo es, en tramos) puede marcar un pozo que existe y no está
-en la capa. Por eso la ausencia de capa entera anula el +10, y por eso un go
-legal en datos reales exige haber mirado la completitud del registro, no solo
-el JSON.
+registro de la CHG lo es, en tramos) puede marcar una parcela cuyo pozo existe
+y no está en la capa. La ausencia del inventario no equivale a ilegalidad.
+Por eso la ausencia de capa entera anula el +10, y por eso un go legal en
+datos reales exige haber mirado la completitud del registro, no solo el JSON.

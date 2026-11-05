@@ -1,48 +1,31 @@
 # Comparación NISAR vs Sentinel-1
 
-AOI: `tesela_rociana` · umbral de coherencia: 0.3
+Estado de la comparación: **no_evaluable**. No hay un porcentaje global de mejora.
 
-## Solape temporal
+Este texto corrige la tabla que citaba +45,3 % de coherencia, +80,7 % de
+píxeles usables y +25,1 % de «ruido» urbano. Esas tres cifras salieron de
+comparar el stack Sentinel-1 HyP3 de 2022-01-06 a 2024-09-16 (8 pares) con
+un solo GUNW NISAR de 2025-10-30 a 2025-11-23. No comparten fechas, no
+comparten el número de pares y no se midieron sobre una máscara común. No
+son una mejora de exactitud y no se vuelven a presentar como tal.
 
-- ¿Hay solape? **False**
-- Motivo: S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común
+Los valores medidos entonces siguen en `docs/comparacion-nisar-s1.json`,
+bajo `exploratorio_historico`, con `mejora_pct` en null. No se han
+recalculado: en este entorno no están los interferogramas.
 
-## Métricas de producto (mismo AOI)
+## Qué falta para que una mejora sea evaluable
 
-| Métrica | Sentinel-1 | NISAR | Mejora NISAR vs S1 | Definición |
-|---|---:|---:|---:|---|
-| Coherencia media | 0.3548 | 0.5154 | 45.3 % | 100*(NISAR-S1)/S1  (mayor es mejor) |
-| Fracción píxeles usables | 0.5095 | 0.9207 | 80.7 % | 100*(NISAR-S1)/S1  (mayor es mejor) |
-| Ruido std zona estable (mm) | 4.7255 | 3.5390 | 25.1 % | 100*(S1-NISAR)/S1  (menor es mejor) |
+La única fórmula admitida es `100 * (err_S1 − err_NISAR) / err_S1`, y solo
+si el error de S1 es > 0 y se cumplen a la vez el solape de pares, la misma
+zona, la máscara común (además de la cobertura nativa de cada sensor), la
+resolución, la referencia, las unidades LOS en mm, la incidencia registrada,
+el intervalo o la estación, un n suficiente, la incertidumbre, el CRS leído
+del producto y el signo de fase anclado. El protocolo está en
+`docs/14-protocolo-comparacion.md`.
 
-S1: 8 ifg, 2022-01-06 → 2024-09-16
-NISAR: 1 ifg, 2025-10-30 → 2025-11-23
+## Exactitud
 
-## Exactitud frente a verdad de terreno
-
-### rmse_gnss_los
-- Estado: **no_calculable**
-- S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común
-- no hay series GNSS descargables (NGL tenv3 404; hace falta RINEX de RAP/IGN procesado a ENU/LOS)
-- no hay piezometros_niveles.csv (la CHG solo ofrece series por visor web, sin API CSV estable)
-- no hay productos EGMS locales (API archive exige login CLMS)
-
-### correlacion_piezometros
-- Estado: **no_calculable**
-- S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común
-- no hay series GNSS descargables (NGL tenv3 404; hace falta RINEX de RAP/IGN procesado a ENU/LOS)
-- no hay piezometros_niveles.csv (la CHG solo ofrece series por visor web, sin API CSV estable)
-- no hay productos EGMS locales (API archive exige login CLMS)
-
-### rmse_egms
-- Estado: **no_calculable**
-- S1 cubre 2022-01-06–2024-09-16; NISAR cubre 2025-10-30–2025-11-23; no hay fechas en común
-- no hay series GNSS descargables (NGL tenv3 404; hace falta RINEX de RAP/IGN procesado a ENU/LOS)
-- no hay piezometros_niveles.csv (la CHG solo ofrece series por visor web, sin API CSV estable)
-- no hay productos EGMS locales (API archive exige login CLMS)
-
-## Advertencias
-
-- Las métricas de coherencia/ruido comparan productos sobre el mismo AOI; si no hay solape temporal, NO son una validación coetánea.
-- NISAR es banda L (λ≈0.24 m); Sentinel-1 es banda C (λ≈0.055 m).
-- No mezclar ambas plataformas en la misma inversión SBAS.
+RMSE GNSS en LOS, correlación piezométrica y RMSE contra EGMS siguen sin
+porcentaje. El nivel del pozo no es desplazamiento. EGMS sale de Sentinel-1
+y no es una verdad independiente. El catálogo de estaciones GNSS no es una
+serie de desplazamiento.

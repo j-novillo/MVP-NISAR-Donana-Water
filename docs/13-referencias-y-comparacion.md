@@ -18,24 +18,21 @@ Fecha: 2026-11-04 (Europe/Madrid). Rama `cursor/poc-donana-insar-8c15`.
 | ARIA S1 GUNW 2025-10+ | **0** productos | No hay ifg S1 listos en el solape NISAR |
 | HyP3 jobs 2025-10+ | pendiente de usuario/clave Earthdata | El token Bearer no autentica HyP3 |
 
-## Mejora NISAR vs Sentinel-1 (producto, mismo AOI)
+## Comparación NISAR vs Sentinel-1
 
-Definiciones en `src/comparar_nisar_s1.py` y tabla en `docs/12-comparacion-nisar-s1.md`.
+Estado: **no_evaluable**. No hay porcentaje de mejora.
 
-| Métrica | S1 | NISAR | Mejora | Definición |
-|---|---:|---:|---:|---|
-| Coherencia media | 0.355 | 0.515 | **+45.3 %** | `100*(NISAR−S1)/S1` |
-| Fracción usable (coh≥0.3) | 0.510 | 0.921 | **+80.7 %** | igual |
-| Ruido std zona urbana (mm) | 4.73 | 3.54 | **+25.1 %** | `100*(S1−NISAR)/S1` |
+Las medias de coherencia (0,355 frente a 0,515), la fracción usable (0,510
+frente a 0,921) y la dispersión espacial urbana (4,73 mm frente a 3,54 mm)
+se calcularon el 4 nov 2026 sobre épocas distintas (S1 2022–2024, 8 pares;
+NISAR un par de 24 días en oct–nov 2025). Se conservan como descripción de
+aquella corrida en el JSON, con el porcentaje retirado. No son exactitud, y
+la dispersión urbana no es ruido instrumental.
 
-### Exactitud vs verdad de terreno
-
-**No calculable** (sin porcentaje):
-
-1. No hay solape temporal S1 (hasta 2024-09) ↔ NISAR (desde 2025-10).
-2. No hay series GNSS descargables ni `piezometros_niveles.csv` ni EGMS local.
-
-Para obtener el % de exactitud hace falta: HyP3 S1 en oct 2025+, más GNSS procesado a LOS y/o series piezométricas exportadas del visor CHG, y/o EGMS con cuenta CLMS.
+La exactitud sigue sin porcentaje. El piezómetro no mide desplazamiento.
+EGMS, cuando se descargue por la API oficial de CLMS, sigue siendo Sentinel-1.
+El RMSE evaluable es GNSS proyectado a LOS. El protocolo está en
+`docs/14-protocolo-comparacion.md`.
 
 ## Cómo repetirlo
 

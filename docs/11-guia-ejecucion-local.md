@@ -177,10 +177,21 @@ python src/score.py
 python src/validar.py
 python src/figuras.py
 
-# 4) Comparación NISAR vs Sentinel-1
+# 4) Comparación. Escribe en data/comparacion/ y no pisa la instantánea de docs/.
 python src/comparar_nisar_s1.py
-# → docs/comparacion-nisar-s1.json
-# → docs/12-comparacion-nisar-s1.md
+
+# Catálogo S1 en la ventana NISAR: por defecto solo el filtro, sin red.
+python src/catalogo_s1_solape.py --inicio 2025-10-01 --fin 2025-12-31
+# En el box, si se quiere el listado CMR (metadatos, no los SLC):
+# python src/catalogo_s1_solape.py --inicio 2025-10-01 --fin 2025-12-31 --consultar
+
+# Spec HyP3 oficial, sin enviar el job:
+python src/preparar_hyp3.py --referencia ID_SLC_REF --secundaria ID_SLC_SEC
+# El POST (--enviar) solo en el box, con EARTHDATA_TOKEN. No lanzarlo desde el agente cloud.
+
+# EGMS: construye la consulta oficial o lee un CSV ya bajado. No descarga.
+python src/leer_egms.py
+# python src/leer_egms.py --csv data/raw/egms/producto.csv
 
 # 5) Visor
 streamlit run src/visor.py
@@ -192,21 +203,20 @@ Atajo sintético (sin red, para comprobar que el entorno funciona):
 bash ejecutar_sintetico.sh
 ```
 
-## 5. Qué significa el “porcentaje de mejora”
+## 5. Qué porcentaje está permitido
 
-Lo calcula `src/comparar_nisar_s1.py`. Definiciones:
+Solo uno, y solo si el protocolo de `docs/14-protocolo-comparacion.md` se
+cumple entero:
 
-| Métrica | Fórmula de mejora NISAR vs S1 |
-|---|---|
-| Coherencia media / fracción usable | `100 * (NISAR − S1) / S1` (mayor es mejor) |
-| Ruido std en zona urbana (mm) | `100 * (S1 − NISAR) / S1` (menor es mejor) |
-| RMSE vs GNSS LOS / vs EGMS | misma que ruido, **solo si hay solape temporal y series** |
-| Correlación con piezómetros | se reporta r de Pearson; la “mejora” es el incremento de r |
+```
+100 * (err_S1 - err_NISAR) / err_S1
+```
 
-Si NISAR (oct 2025+) y los HyP3 S1 (2022–2024) **no se solapan**, las
-métricas de exactitud salen `no_calculable` con el motivo. Las de coherencia
-y ruido sí se calculan sobre el mismo AOI, pero **no** son una validación
-coetánea: son calidad de producto.
+con `err_S1 > 0`. Coherencia, fracción usable y dispersión urbana no usan
+esa fórmula. Piezómetros y EGMS no son el error de exactitud. Si falta
+solape de pares, CRS leído, signo anclado, incidencia, máscara común o un
+n suficiente, el estado es `no_evaluable` y el porcentaje es null. No hay
+un porcentaje único que resuma la comparación.
 
 ## 6. Disco y hardware
 
@@ -223,7 +233,7 @@ coetánea: son calidad de producto.
 | HyP3 AuthenticationError | hace falta usuario/clave Earthdata, no solo el token |
 | CDSE 401 | renueva con usuario/clave; el JWT suelto caduca en minutos |
 | EGMS 401 | falta login CLMS |
-| Comparador sin mejora de exactitud | falta solape S1–NISAR o series GNSS/piezo/EGMS |
-| CRS raro en NISAR | el GUNW usa **EPSG:32630** (UTM 30N); el lector ya lo detecta |
+| Comparador `no_evaluable` | falta solape de pares, CRS leído, signo anclado o GNSS en LOS. No se rellena con un % |
+| CRS del GUNW | hay que leer el EPSG del producto. Rociana está en el huso 29. No asumir 32630 ni 25829 si el fichero no lo trae |
 
 Más detalle de diseño: `docs/01`…`docs/10` y `docs/resultados-datos-reales.md`.

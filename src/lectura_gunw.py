@@ -62,6 +62,7 @@ class Interferograma:
     componentes: np.ndarray | None
     transform: Affine
     crs: str
+    crs_leido: bool = True
 
 
 def desplazamiento_mm(fase_rad: np.ndarray, longitud_onda_m: float, signo: float) -> np.ndarray:
@@ -181,7 +182,7 @@ def _afin_desde_ejes(x: np.ndarray, y: np.ndarray) -> Affine:
     return Affine(abs(dx), 0.0, x0 if dx > 0 else float(x[-1] - abs(dx) / 2.0), 0.0, -abs(dy), y0)
 
 
-def leer_hdf5(ruta: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray | None, Affine, str]:
+def leer_hdf5(ruta: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray | None, Affine, str, bool]:
     """Lee un GUNW HDF5 (NISAR o ARIA).
 
     Primero intenta rioxarray sobre el subdataset de fase. GDAL no siempre
@@ -201,12 +202,12 @@ def leer_hdf5(ruta: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray | None, Af
         coherencia = np.asarray(ds_coh[...], dtype=np.float64)
         ds_cc = _buscar_dataset(handle, RUTAS_COMPONENTES, "connectedComponents")
         componentes = np.asarray(ds_cc[...]) if ds_cc is not None else None
-        transform, crs = _georreferencia_hdf5(handle, fase.shape)
+        transform, crs, crs_leido = _georreferencia_hdf5(handle, fase.shape)
     fase = _a_2d(fase)
     coherencia = _a_2d(coherencia)
     if componentes is not None:
         componentes = _a_2d(componentes)
-    return fase, coherencia, componentes, transform, crs
+    return fase, coherencia, componentes, transform, crs, crs_leido
 
 
 def _a_2d(arr: np.ndarray) -> np.ndarray:
@@ -216,8 +217,12 @@ def _a_2d(arr: np.ndarray) -> np.ndarray:
     return arr
 
 
-def _georreferencia_hdf5(handle, forma: tuple) -> tuple[Affine, str]:
-    """Intenta ejes NISAR (metros) y, si no, lon/lat de ARIA."""
+def _georreferencia_hdf5(handle, forma: tuple) -> tuple[Affine, str, bool]:
+    """Ejes y CRS. El tercer valor es False si el EPSG no está en el fichero.
+
+    No se finge un huso: el fallback EPSG:25829 solo sirve para no romper
+    un array, y la comparación lo trata como no verificado.
+    """
     candidatos_x = (
         "science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/HH/xCoordinates",
         "science/LSAR/GUNW/grids/frequencyA/unwrappedInterferogram/VV/xCoordinates",
@@ -237,8 +242,10 @@ def _georreferencia_hdf5(handle, forma: tuple) -> tuple[Affine, str]:
     dx = _buscar_dataset(handle, candidatos_x, "xCoordinates")
     dy = _buscar_dataset(handle, candidatos_y, "yCoordinates")
     if dx is not None and dy is not None:
-        crs = _crs_hdf5(handle) or "EPSG:25829"
-        return _afin_desde_ejes(dx[...], dy[...]), crs
+        crs = _crs_hdf5(handle)
+        if crs:
+            return _afin_desde_ejes(dx[...], dy[...]), crs, True
+        return _afin_desde_ejes(dx[...], dy[...]), "EPSG:25829", False
 
     lon = _buscar_dataset(handle, ("science/grids/data/longitude",), "longitude")
     lat = _buscar_dataset(handle, ("science/grids/data/latitude",), "latitude")
@@ -250,7 +257,7 @@ def _georreferencia_hdf5(handle, forma: tuple) -> tuple[Affine, str]:
             eje_y = lat_a[:, lat_a.shape[1] // 2]
         else:
             eje_x, eje_y = lon_a, lat_a
-        return _afin_desde_ejes(eje_x, eje_y), "EPSG:4326"
+        return _afin_desde_ejes(eje_x, eje_y), "EPSG:4326", True
     raise ValueError(
         "El HDF5 no trae ejes x/y ni lon/lat. No puedo georreferenciar el GUNW."
     )
@@ -293,10 +300,11 @@ def cargar_interferograma(ruta: Path, longitud_onda_defecto: float) -> Interfero
     plataforma, fref, fsec, onda = _metadatos(ruta, longitud_onda_defecto)
     sufijo = ruta.suffix.lower()
     componentes = None
+    crs_leido = True
     if sufijo in {".tif", ".tiff"}:
         fase, coherencia, transform, crs = leer_geotiff(ruta)
     elif sufijo in {".h5", ".hdf5"}:
-        fase, coherencia, componentes, transform, crs = leer_hdf5(ruta)
+        fase, coherencia, componentes, transform, crs, crs_leido = leer_hdf5(ruta)
     else:
         raise ValueError(f"Extensión no soportada: {ruta}")
     if fase.shape != coherencia.shape:
@@ -312,6 +320,7 @@ def cargar_interferograma(ruta: Path, longitud_onda_defecto: float) -> Interfero
         componentes=componentes,
         transform=transform,
         crs=crs,
+        crs_leido=crs_leido,
     )
 
 

@@ -100,4 +100,14 @@ borrar `data/raw/` al cambiar de modo.
 Un mapa de score no es un procedimiento sancionador. La coordenada de un
 cierre, la titularidad y el estado administrativo del expediente no salen de
 un interferograma. Como mucho, esta tubería propone dónde mirar en campo y
-contra el registro.
+contra el registro. La subsidencia no detecta un pozo por sí misma, y la
+falta del inventario de concesiones no convierte una parcela en ilegal.
+
+## Comparar NISAR con Sentinel-1 no es un porcentaje único
+
+Coherencia, fracción de píxeles y la dispersión espacial en el casco urbano,
+calculadas en años distintos y con un solo par NISAR, no son una mejora de
+exactitud. El nivel piezométrico no es desplazamiento. EGMS sale de
+Sentinel-1 y no es una verdad independiente. El protocolo está en
+`docs/14-protocolo-comparacion.md`. Hasta que ese protocolo no se cumpla,
+el estado de la comparación es `no_evaluable`.

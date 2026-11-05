@@ -1,29 +1,19 @@
 #!/usr/bin/env python3
-"""Compara NISAR GUNW frente a Sentinel-1 (HyP3) sobre el mismo AOI.
+"""Compara NISAR GUNW frente a Sentinel-1 sobre el mismo AOI.
 
-Métricas (todas se calculan solo si hay datos suficientes; si falta algo se
-declara explícitamente `no_calculable` con el motivo):
+La única mejora que este módulo puede marcar como evaluable es
 
-1. Coherencia media y fracción de píxeles usables (coh >= umbral) en el AOI.
-2. Ruido: desviación típica del desplazamiento LOS (mm) en una zona urbana
-   de referencia (casco de Rociana) tras quitar la mediana local.
-3. Exactitud frente a verdad de terreno, solo si hay solape temporal:
-   - RMSE frente a GNSS proyectado a LOS (si existen series en data/raw/gnss/).
-   - Correlación con cambios de nivel piezométrico (si existe
-     data/raw/capas/piezometros_niveles.csv).
-   - RMSE frente a EGMS Ortho (si hay GeoTIFF/CSV en data/raw/egms/).
+    100 * (err_S1 - err_NISAR) / err_S1
 
-Porcentaje de mejora de NISAR respecto a S1 (cuando ambas cifras existen):
+y solo si el error existe, el baseline de S1 es > 0 y la comparabilidad
+del protocolo está completa (solape de pares, máscara común, CRS leído,
+signo anclado, incidencia, n, incertidumbre). Si falta algo, el estado es
+`no_evaluable` y el porcentaje es null.
 
-    mejora_% = 100 * (metric_S1 - metric_NISAR) / metric_S1
-
-para métricas "menor es mejor" (ruido, RMSE). Para coherencia y fracción
-usable ("mayor es mejor"):
-
-    mejora_% = 100 * (metric_NISAR - metric_S1) / metric_S1
-
-No inventa solapes ni verdades de terreno: si NISAR y S1 no comparten fechas,
-las métricas de exactitud quedan `no_calculable`.
+Coherencia, fracción usable y la dispersión espacial urbana se conservan
+como cifras exploratorias, sin porcentaje. El nivel piezométrico no es
+desplazamiento. EGMS proviene de Sentinel-1 y no es verdad independiente.
+El RMSE de exactitud, cuando llegue a ser evaluable, es el GNSS en LOS.
 """
 from __future__ import annotations
 
@@ -38,6 +28,21 @@ import numpy as np
 from rasterio.warp import Resampling, reproject
 from rasterio.transform import from_bounds
 
+from comparacion_protocolo import (
+    ADVERTENCIA_DISPERSION,
+    ADVERTENCIA_EGMS,
+    ADVERTENCIA_GNSS,
+    ADVERTENCIA_LEGAL,
+    ADVERTENCIA_PIEZO,
+    ESTADO_NO,
+    exploratorio,
+    mejora_error,
+    motivo_comparabilidad,
+    nota_primer_gunw,
+    papel_referencia,
+    solape_de_pares,
+    checklist_comparabilidad,
+)
 from lectura_gunw import (
     cargar_interferograma,
     desplazamiento_mm,
@@ -71,6 +76,9 @@ class MetricasProducto:
     n_pixeles_aoi: int
     n_pixeles_zona_estable: int
     notas: list[str]
+    intervalos: list | None = None
+    crs_leidos: list | None = None
+    dispersion_espacial_urbana_mm: float | None = None
 
 
 def _es_nisar(ruta: Path) -> bool:
@@ -161,6 +169,8 @@ def _metricas_lista(
     cohs = []
     ruidos = []
     fechas = []
+    intervalos = []
+    crs_leidos = []
     n_pix = 0
     n_est = 0
 
@@ -186,9 +196,12 @@ def _metricas_lista(
         n_est = int(estable.sum())
         if n_est >= 5:
             local = disp[estable]
+            # Dispersión espacial, no ruido instrumental.
             ruidos.append(float(np.nanstd(local - np.nanmedian(local))))
         fechas.append(ifg.fecha_referencia)
         fechas.append(ifg.fecha_secundaria)
+        intervalos.append([ifg.fecha_referencia.isoformat(), ifg.fecha_secundaria.isoformat()])
+        crs_leidos.append(bool(getattr(ifg, "crs_leido", False)))
 
     if not cohs:
         return MetricasProducto(
@@ -203,9 +216,13 @@ def _metricas_lista(
             n_pixeles_aoi=0,
             n_pixeles_zona_estable=0,
             notas=notas or ["ningún interferograma usable en el AOI"],
+            intervalos=intervalos,
+            crs_leidos=crs_leidos,
         )
 
     stack = np.concatenate(cohs)
+    if ruidos:
+        notas.append(ADVERTENCIA_DISPERSION)
     return MetricasProducto(
         plataforma=etiqueta,
         n_interferogramas=len(rutas),
@@ -218,37 +235,24 @@ def _metricas_lista(
         n_pixeles_aoi=n_pix,
         n_pixeles_zona_estable=n_est,
         notas=notas,
+        intervalos=intervalos,
+        crs_leidos=crs_leidos,
+        dispersion_espacial_urbana_mm=float(np.nanmean(ruidos)) if ruidos else None,
     )
 
 
-def _mejora(valor_s1, valor_nisar, mayor_mejor: bool) -> dict:
-    if valor_s1 is None or valor_nisar is None:
-        return {
-            "mejora_pct": None,
-            "definicion": None,
-            "estado": "no_calculable",
-            "motivo": "falta métrica en S1 o NISAR",
-        }
-    if valor_s1 == 0:
-        return {
-            "mejora_pct": None,
-            "definicion": None,
-            "estado": "no_calculable",
-            "motivo": "denominador S1 = 0",
-        }
+def _mejora(valor_s1, valor_nisar, mayor_mejor: bool = False, comparable: bool = False) -> dict:
+    """Compatibilidad de tests. La mejora evaluable solo existe para un error.
+
+    `mayor_mejor=True` (coherencia, fracción) no es un error: queda no_evaluable
+    aunque los dos valores existan. `mayor_mejor=False` usa
+    100*(err_S1-err_NISAR)/err_S1 y exige `comparable`.
+    """
     if mayor_mejor:
-        mejora = 100.0 * (valor_nisar - valor_s1) / valor_s1
-        definicion = "100*(NISAR-S1)/S1  (mayor es mejor)"
-    else:
-        mejora = 100.0 * (valor_s1 - valor_nisar) / valor_s1
-        definicion = "100*(S1-NISAR)/S1  (menor es mejor)"
-    return {
-        "mejora_pct": float(mejora),
-        "definicion": definicion,
-        "valor_s1": float(valor_s1),
-        "valor_nisar": float(valor_nisar),
-        "estado": "ok",
-    }
+        out = exploratorio(valor_s1, valor_nisar, "cifra exploratoria; no es un error")
+        out["estado"] = ESTADO_NO
+        return out
+    return mejora_error(valor_s1, valor_nisar, comparable=comparable)
 
 
 def _rango_fechas(metricas: MetricasProducto) -> tuple[date | None, date | None]:
@@ -257,29 +261,35 @@ def _rango_fechas(metricas: MetricasProducto) -> tuple[date | None, date | None]
     return date.fromisoformat(metricas.fechas_min), date.fromisoformat(metricas.fechas_max)
 
 
+def _intervalos(metricas: MetricasProducto) -> list[tuple[date, date]]:
+    pares = []
+    for item in metricas.intervalos or []:
+        if not item or len(item) != 2 or not item[0] or not item[1]:
+            continue
+        a = date.fromisoformat(str(item[0])[:10])
+        b = date.fromisoformat(str(item[1])[:10])
+        pares.append((min(a, b), max(a, b)))
+    return pares
+
+
 def _solape(a: MetricasProducto, b: MetricasProducto) -> dict:
+    """Solape entre pares. El recubrimiento min–max no cuenta como solape."""
+    resultado = solape_de_pares(_intervalos(a), _intervalos(b))
     a0, a1 = _rango_fechas(a)
     b0, b1 = _rango_fechas(b)
-    if None in (a0, a1, b0, b1):
-        return {"hay_solape": False, "motivo": "faltan fechas en S1 o NISAR"}
-    ini = max(a0, b0)
-    fin = min(a1, b1)
-    if ini <= fin:
-        return {
-            "hay_solape": True,
-            "inicio": str(ini),
-            "fin": str(fin),
-            "dias": (fin - ini).days + 1,
-        }
-    return {
-        "hay_solape": False,
-        "motivo": (
+    resultado["recubrimiento_s1"] = [str(a0), str(a1)] if a0 and a1 else None
+    resultado["recubrimiento_nisar"] = [str(b0), str(b1)] if b0 and b1 else None
+    if not resultado["hay_solape"] and a0 and b0 and not (a.intervalos or b.intervalos):
+        resultado["motivo"] = (
+            "solo hay recubrimiento min–max, no intervalos de par; "
+            "eso no es solape"
+        )
+    elif not resultado["hay_solape"] and a0 and b0:
+        resultado["motivo"] = (
             f"S1 cubre {a0}–{a1}; NISAR cubre {b0}–{b1}; "
-            "no hay fechas en común"
-        ),
-        "s1": [str(a0), str(a1)],
-        "nisar": [str(b0), str(b1)],
-    }
+            "ningún par se cruza"
+        )
+    return resultado
 
 
 def _buscar_verdad_terreno(cfg: dict) -> dict:
@@ -312,40 +322,44 @@ def RAIZ_EGMS(cfg) -> Path:
     return ruta_proyecto(cfg, "interferogramas").parent / "egms"
 
 
-def exactitud_no_calculable(solape: dict, verdad: dict) -> dict:
+def bloque_referencia(nombre: str, motivos_extra: list[str]) -> dict:
+    clave = {
+        "rmse_gnss_los": "gnss_los",
+        "correlacion_piezometros": "piezometria",
+        "rmse_egms": "egms",
+    }[nombre]
+    papel = papel_referencia(clave)
+    return {
+        "estado": ESTADO_NO,
+        "mejora_pct": None,
+        "definicion": FORMULA if papel["puede_entrar_en_rmse"] else None,
+        "papel": papel,
+        "motivos": [papel["texto"], *motivos_extra],
+    }
+
+
+FORMULA = "100*(err_S1-err_NISAR)/err_S1"
+
+
+def exactitud_no_calculable(solape: dict, verdad: dict, checklist: dict) -> dict:
     motivos = []
     if not solape.get("hay_solape"):
-        motivos.append(solape.get("motivo", "sin solape temporal S1–NISAR"))
+        motivos.append(solape.get("motivo", "sin solape de pares S1–NISAR"))
+    if checklist and not checklist.get("comparable"):
+        motivos.append(motivo_comparabilidad(checklist))
     if not verdad["gnss_series"]:
         motivos.append(
-            "no hay series GNSS descargables (NGL tenv3 404; hace falta RINEX "
-            "de RAP/IGN procesado a ENU/LOS)"
+            "no hay series GNSS en LOS (hace falta ENU más azimut e incidencia; "
+            "el catálogo de estaciones no es una serie)"
         )
     if not verdad["piezometros_niveles_csv"]:
-        motivos.append(
-            "no hay piezometros_niveles.csv (la CHG solo ofrece series por "
-            "visor web, sin API CSV estable)"
-        )
+        motivos.append("no hay serie de niveles; aunque la hubiera, no mide desplazamiento")
     if not verdad["egms_productos"]:
-        motivos.append(
-            "no hay productos EGMS locales (API archive exige login CLMS)"
-        )
+        motivos.append("no hay producto EGMS local; aunque lo hubiera, no es independiente de S1")
     return {
-        "rmse_gnss_los": {
-            "estado": "no_calculable",
-            "mejora_pct": None,
-            "motivos": motivos,
-        },
-        "correlacion_piezometros": {
-            "estado": "no_calculable",
-            "mejora_pct": None,
-            "motivos": motivos,
-        },
-        "rmse_egms": {
-            "estado": "no_calculable",
-            "mejora_pct": None,
-            "motivos": motivos,
-        },
+        "rmse_gnss_los": bloque_referencia("rmse_gnss_los", motivos),
+        "correlacion_piezometros": bloque_referencia("correlacion_piezometros", motivos),
+        "rmse_egms": bloque_referencia("rmse_egms", motivos),
     }
 
 
@@ -363,39 +377,69 @@ def comparar(cfg: dict) -> dict:
     m_nisar = _metricas_lista(nisar, "NISAR", cfg, aoi, umbral)
     solape = _solape(m_s1, m_nisar)
     verdad = _buscar_verdad_terreno(cfg)
-
+    signo_anclado = bool(cfg.get("comparacion", {}).get("signo_fase_anclado", False))
+    checklist = checklist_comparabilidad(
+        hay_solape=bool(solape.get("hay_solape")),
+        misma_zona=True,
+        mascara_comun=False,
+        resolucion_comparable=False,
+        referencia_comun=True,
+        unidades_los_mm=True,
+        los_incidencia_registrada=False,
+        estacion_o_intervalo_comun=bool(solape.get("hay_solape")),
+        n_s1=m_s1.n_interferogramas,
+        n_nisar=m_nisar.n_interferogramas,
+        incertidumbre_reportada=False,
+        crs_leido_s1=bool(m_s1.crs_leidos) and all(m_s1.crs_leidos),
+        crs_leido_nisar=bool(m_nisar.crs_leidos) and all(m_nisar.crs_leidos),
+        signo_fase_anclado=signo_anclado,
+    )
+    motivo = motivo_comparabilidad(checklist)
     mejoras = {
-        "coherencia_media": _mejora(m_s1.coherencia_media, m_nisar.coherencia_media, mayor_mejor=True),
-        "fraccion_usable": _mejora(m_s1.fraccion_usable, m_nisar.fraccion_usable, mayor_mejor=True),
-        "ruido_std_mm_zona_estable": _mejora(
-            m_s1.ruido_std_mm_zona_estable,
-            m_nisar.ruido_std_mm_zona_estable,
-            mayor_mejor=False,
+        "coherencia_media": exploratorio(
+            m_s1.coherencia_media,
+            m_nisar.coherencia_media,
+            "coherencia media exploratoria; no es un error",
         ),
+        "fraccion_usable": exploratorio(
+            m_s1.fraccion_usable,
+            m_nisar.fraccion_usable,
+            "fracción usable exploratoria, en la cobertura nativa de cada sensor",
+        ),
+        "dispersion_espacial_urbana_mm": exploratorio(
+            m_s1.dispersion_espacial_urbana_mm,
+            m_nisar.dispersion_espacial_urbana_mm,
+            ADVERTENCIA_DISPERSION,
+        ),
+        "rmse_gnss_los": mejora_error(None, None, comparable=checklist["comparable"], motivo_comparabilidad=motivo),
     }
-    exactitud = exactitud_no_calculable(solape, verdad)
-    if solape.get("hay_solape") and (verdad["gnss_series"] or verdad["piezometros_niveles_csv"] or verdad["egms_productos"]):
-        # Reservado: cuando existan series coetáneas se calcularán aquí.
-        # No se rellena con cifras inventadas.
-        exactitud["nota"] = (
-            "Hay solape y alguna verdad de terreno en disco; amplíe este "
-            "bloque con RMSE/correlación reales antes de citar un %."
-        )
+    exactitud = exactitud_no_calculable(solape, verdad, checklist)
 
     resumen = {
+        "estado_comparacion": "evaluable" if checklist["comparable"] else ESTADO_NO,
+        "porcentaje_global": None,
         "aoi": aoi.nombre,
         "umbral_coherencia": umbral,
         "solape_temporal": solape,
+        "comparabilidad": checklist,
         "sentinel1": asdict(m_s1),
         "nisar": asdict(m_nisar),
-        "mejora_producto_calidad": mejoras,
+        "exploratorio": mejoras,
+        "mejora_producto_calidad": {
+            clave: {"estado": ESTADO_NO, "mejora_pct": None, "motivo": bloque.get("motivo")}
+            for clave, bloque in mejoras.items()
+        },
         "mejora_exactitud_vs_verdad": exactitud,
         "verdad_terreno_disponible": verdad,
+        "primer_gunw_documentado": nota_primer_gunw(),
         "advertencias": [
-            "Las métricas de coherencia/ruido comparan productos sobre el mismo "
-            "AOI; si no hay solape temporal, NO son una validación coetánea.",
-            "NISAR es banda L (λ≈0.24 m); Sentinel-1 es banda C (λ≈0.055 m).",
-            "No mezclar ambas plataformas en la misma inversión SBAS.",
+            ADVERTENCIA_LEGAL,
+            ADVERTENCIA_DISPERSION,
+            ADVERTENCIA_PIEZO,
+            ADVERTENCIA_EGMS,
+            ADVERTENCIA_GNSS,
+            "NISAR es banda L (λ≈0,24 m); Sentinel-1 es banda C (λ≈0,055 m). No se invierten juntas.",
+            "No hay un porcentaje único de mejora.",
         ],
     }
     return resumen
@@ -408,38 +452,39 @@ def _markdown(resumen: dict) -> str:
     lineas = [
         "# Comparación NISAR vs Sentinel-1",
         "",
+        f"Estado: **{resumen.get('estado_comparacion', ESTADO_NO)}**. "
+        "No hay porcentaje global.",
+        "",
         f"AOI: `{resumen['aoi']}` · umbral de coherencia: {resumen['umbral_coherencia']}",
         "",
-        "## Solape temporal",
+        "## Solape temporal de pares",
         "",
-        f"- ¿Hay solape? **{sol.get('hay_solape')}**",
+        f"- ¿Hay solape de pares? **{sol.get('hay_solape')}**",
     ]
     if sol.get("hay_solape"):
-        lineas.append(f"- Ventana: {sol['inicio']} → {sol['fin']} ({sol['dias']} días)")
+        lineas.append(
+            f"- Pares que se cruzan: S1 {sol.get('n_pares_s1_en_solape')}, "
+            f"NISAR {sol.get('n_pares_nisar_en_solape')}"
+        )
     else:
         lineas.append(f"- Motivo: {sol.get('motivo')}")
     lineas += [
         "",
-        "## Métricas de producto (mismo AOI)",
+        "## Cifras exploratorias (sin porcentaje de mejora)",
         "",
-        "| Métrica | Sentinel-1 | NISAR | Mejora NISAR vs S1 | Definición |",
-        "|---|---:|---:|---:|---|",
+        "| Métrica | Sentinel-1 | NISAR | Mejora |",
+        "|---|---:|---:|---|",
     ]
     etiquetas = [
-        ("coherencia_media", "Coherencia media", True),
-        ("fraccion_usable", "Fracción píxeles usables", True),
-        ("ruido_std_mm_zona_estable", "Ruido std zona estable (mm)", False),
+        ("coherencia_media", "Coherencia media"),
+        ("fraccion_usable", "Fracción usable (cobertura nativa)"),
+        ("dispersion_espacial_urbana_mm", "Dispersión espacial urbana (mm)"),
     ]
-    mej = resumen["mejora_producto_calidad"]
-    for clave, nombre, _ in etiquetas:
-        v_s1 = s1.get(clave)
-        v_ni = ni.get(clave)
-        m = mej.get(clave, {})
-        pct = m.get("mejora_pct")
-        pct_txt = f"{pct:.1f} %" if isinstance(pct, (int, float)) else "no calculable"
-        defn = m.get("definicion") or m.get("motivo") or "—"
+    expl = resumen.get("exploratorio", {})
+    for clave, nombre in etiquetas:
+        bloque = expl.get(clave, {})
         lineas.append(
-            f"| {nombre} | {_fmt(v_s1)} | {_fmt(v_ni)} | {pct_txt} | {defn} |"
+            f"| {nombre} | {_fmt(bloque.get('valor_s1'))} | {_fmt(bloque.get('valor_nisar'))} | no_evaluable |"
         )
     lineas += [
         "",
@@ -480,12 +525,12 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--config", default=None)
     parser.add_argument(
         "--salida-json",
-        default="docs/comparacion-nisar-s1.json",
-        help="Ruta relativa a la raíz del repo",
+        default="data/comparacion/comparacion-nisar-s1.json",
+        help="No pisa docs/comparacion-nisar-s1.json (instantánea ya etiquetada).",
     )
     parser.add_argument(
         "--salida-md",
-        default="docs/12-comparacion-nisar-s1.md",
+        default="data/comparacion/comparacion-nisar-s1.md",
     )
     args = parser.parse_args(argv)
     cfg = cargar_config(args.config)
@@ -498,8 +543,10 @@ def main(argv: list[str] | None = None) -> None:
     out_md.write_text(_markdown(resumen), encoding="utf-8")
     log.info("JSON → %s", out_json)
     log.info("MD   → %s", out_md)
-    for k, v in resumen["mejora_producto_calidad"].items():
-        log.info("%s: %s", k, v.get("mejora_pct") if v.get("estado") == "ok" else v.get("motivo"))
+    log.info("Estado: %s", resumen["estado_comparacion"])
+    for k, v in resumen["mejora_exactitud_vs_verdad"].items():
+        if isinstance(v, dict):
+            log.info("%s: %s", k, v.get("estado"))
 
 
 if __name__ == "__main__":

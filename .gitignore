@@ -40,3 +40,7 @@ data/logs/
 *.part
 *.zip
 data/procesado_nisar/
+data/comparacion/
+data/catalogo/
+data/hyp3/
+data/egms/
